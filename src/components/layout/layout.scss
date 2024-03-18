@@ -1,0 +1,54 @@
+body {	
+    color: white;
+    background: rgb(14, 13, 13);
+    // background: linear-gradient(90deg, rgba(29,28,28,1) 0%, rgba(48,47,47,1) 30%, rgba(66,67,69,1) 50%, rgba(37,33,33,1) 70%, rgba(15,14,14,1) 100%);     
+}
+@font-face {
+    font-family: 'logo';
+    src: url('../fonts/Royalacid_o.ttf') format('truetype'),
+    /* Add additional formats if necessary */
+  }
+  @font-face {
+    font-family: 'oldlondon';
+    src: url('../fonts/PlayfairDisplay.ttf') format('truetype'),
+    /* Add additional formats if necessary */
+  }
+.main-children{
+    // background-color: red;
+}
+.navbar-container{
+    inset:0;
+    display: flex;
+    color: white;
+    padding: 0 30px;
+    font-size: 30px;
+    align-items: center;
+    text-decoration: none;
+    justify-content: space-between;
+    border-bottom: 1px solid rgb(83, 82, 82);
+    font-family: 'logo', sans-serif;
+}
+.landing-container{
+    display: flex;
+    object-fit: contain;
+    overflow: hidden;
+    padding: 50px 0;
+    padding-bottom: 120px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    .landing-title{
+        text-align: center;
+        font-size: 80px;
+        font-weight: 900;
+        padding-bottom: 20px;
+        font-family: 'oldlondon', sans-serif;
+    }
+    .landing-text{
+        text-align: center;
+        width: 50vw;
+        font-size: 25px;
+        color: rgb(206, 198, 198);
+        font-family: 'oldlondon', sans-serif;
+    }
+}

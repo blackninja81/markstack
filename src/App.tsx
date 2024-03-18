@@ -1,11 +1,15 @@
-import './App.css'
+import './App.scss'
+import Tabs from './components/tabs/Tabs'
+import Layout from './components/layout/Layout'
 
 function App() {
 
   return (
-    <>
-     <h1>Hello</h1>
-    </>
+    <Layout>
+    <div>
+      <Tabs/>
+    </div>
+    </Layout>
   )
 }
 
