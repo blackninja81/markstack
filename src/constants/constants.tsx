@@ -94,13 +94,6 @@ export const Resources = {
         link: "https://coolors.co/",
       }
       ,
-      fontjoy: {
-        image: "/assets/images/screenshots/screenshot15.png",
-        label: "Font Joy",
-        desciption:"Generate font combinations",
-        link: "https://fontjoy.com/",
-      }
-      ,
       haikei: {
         image: "/assets/images/screenshots/screenshot16.png",
         label: "Haikei",
@@ -190,6 +183,12 @@ export const Resources = {
         label: "Iconify",
         desciption:"Over 200,000 open source vector icons",
         link: "https://iconify.design/",
+      },
+      gradient: {
+        image: "/assets/images/screenshots/screenshot29.png",
+        label: "Gradient",
+        desciption:"Make backgrounf gradients",
+        link: "https://cssgradient.io/",
       }
       
     },
@@ -277,7 +276,7 @@ export const Resources = {
     },
     technologies: {
         react: {
-            image: "/assets/icons/technologies/react.webp",
+            image: "/assets/icons/technologies/react.svg",
             label: "React",
             link: "https://react.dev/",
           } ,
@@ -287,7 +286,7 @@ export const Resources = {
             link: "https://nextjs.org/",
           } ,
           github: {
-            image: "/assets/icons/technologies/github.webp",
+            image: "/assets/icons/technologies/github.svg",
             label: "Github",
             link: "https://github.com/",
           } ,
@@ -302,7 +301,7 @@ export const Resources = {
             link: "https://redux.js.org/",
           } ,
           svelte: {
-            image: "/assets/icons/technologies/svelte.webp",
+            image: "/assets/icons/technologies/svelte.svg",
             label: "Svelte",
             link: "https://svelte.dev/",
           } ,
@@ -313,17 +312,68 @@ export const Resources = {
           } 
     },
     inspiration: {
-        console: {
-            image: "/assets/images/screenshots/screenshot1.png",
-            label: "consoles",
-            link: "cosnole",
-          } 
+        awwwards: {
+            image: "/assets/images/screenshots/screenshot34.png",
+            label: "Awwwards",
+            link: "https://www.awwwards.com/",
+          },
+          darkmode: {
+            image: "/assets/images/screenshots/screenshot35.png",
+            label: "Dark Mode Design",
+            link: "https://www.darkmodedesign.com/",
+          },
+          godly: {
+            image: "/assets/images/screenshots/screenshot36.png",
+            label: "godly",
+            link: "https://godly.website/",
+          }, 
+          refero: {
+            image: "/assets/images/screenshots/screenshot37.png",
+            label: "Refero",
+            link: "https://refero.design/",
+          }, 
+          stacksorted: {
+            image: "/assets/images/screenshots/screenshot38.png",
+            label: "Stack Sorted",
+            link: "https://stacksorted.com/buttons",
+          }, 
+          startupwebsites: {
+            image: "/assets/images/screenshots/screenshot39.png",
+            label: "Startup Websites",
+            link: "https://www.startupwebsites.co/",
+          }, 
+          
     },
     fonts: {
-        console: {
-            image: "/assets/images/screenshots/screenshot1.png",
-            label: "consoles",
-            link: "cosnole",
-          } 
+      fontjoy: {
+        image: "/assets/images/screenshots/screenshot15.png",
+        label: "Font Joy",
+        desciption:"Generate font combinations",
+        link: "https://fontjoy.com/",
+      },
+      googlefonts: {
+        image: "/assets/images/screenshots/screenshot30.png",
+        label: "Google Fonts",
+        desciption:"Collection of fonts by google",
+        link: "https://fonts.google.com/",
+      } ,
+      dafont: {
+        image: "/assets/images/screenshots/screenshot31.png",
+        label: "Dafont",
+        desciption:"Collection of many fonts",
+        link: "https://www.dafont.com/",
+      },
+      fontshare: {
+        image: "/assets/images/screenshots/screenshot32.png",
+        label: "Fontshare",
+        desciption:"Collection of fonts",
+        link: "https://www.fontshare.com/",
+      },
+      uncut: {
+        image: "/assets/images/screenshots/screenshot33.png",
+        label: "Uncut",
+        desciption:"Collection of fonts",
+        link: "https://uncut.wtf/",
+      }    
     }
 }
