@@ -1,9 +1,17 @@
 import { Helmet } from 'react-helmet';
+import ReactGA from 'react-ga';
 import './App.scss';
 import Tabs from './components/tabs/Tabs';
 import Layout from './components/layout/Layout';
+import { useEffect } from 'react';
 
 function App() {
+  ReactGA.initialize('G-J2GPDS11S3');
+
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
+  }, []);
+
   return (
     <Layout>
       <div>
