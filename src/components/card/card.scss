@@ -3,7 +3,7 @@
   grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
 
   .card-body {
-    height: 30vh;
+    height: 23vh;
     margin: 10px;
     min-width: 20vw;
     max-width: 80vw;
@@ -32,7 +32,7 @@
         opacity: 1;
         height: 100%;
         width: 100%;
-        object-fit: cover;
+        object-fit: contain;
         border-radius: 10px;
       }
     }
@@ -49,8 +49,7 @@
         color: rgb(103, 103, 110);
         font-weight: 1500;
       }
-      .card-description{
-      }
+      
     }
   }
 }

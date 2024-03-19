@@ -15,7 +15,7 @@ const Card: React.FC<CardProps> = ({data}) => {
     <a href={data.link} target="_blank">
     <div className="card-body">
       <div className="card-image">
-        <img src={data.image} alt={data.label}/>
+        <img src={data.image} alt={data.label} loading="lazy"/>
       </div>
       <div className="card-text">
         <div className="card-name"><h3><b>{data.label}</b></h3></div>

@@ -24,7 +24,7 @@ const Tabs: React.FC = () => {
   });
   
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 12;
   const handleTabChange = (tabIndex: number) => {
     setSelectedTab(tabIndex);
   };
@@ -33,11 +33,17 @@ const Tabs: React.FC = () => {
     event: React.MouseEvent<HTMLAnchorElement>
   ) => {
     event.preventDefault(); // Prevent the default action of the event
-    console.log(`Changing page to ${page} for tab ${selectedTab}`);
-    setCurrentPage((prevCurrentPage) => ({
-      ...prevCurrentPage,
-      [selectedTab]: page,
-    }));
+    
+    // Calculate the total pages for the current tab
+    const totalTabPages = totalPages[selectedTab];
+    
+    // Check if the requested page is within the range of total pages
+    if (page >= 1 && page <= totalTabPages) {
+      setCurrentPage((prevCurrentPage) => ({
+        ...prevCurrentPage,
+        [selectedTab]: page,
+      }));
+    }
   };
   
 
@@ -54,9 +60,6 @@ const Tabs: React.FC = () => {
     const endIndex = Math.min(startIndex + itemsPerPage, items.length);
     return items.slice(startIndex, endIndex);
   };
-  
-
-  
 
   // Example usage
   const toolsItems = Object.values(Resources.tools);
@@ -71,9 +74,13 @@ const Tabs: React.FC = () => {
   const inspiration = getItemsForCurrentPage(inspirationItems);
   const fonts = getItemsForCurrentPage(fontsItems);
   
-
-  console.log("Current page:", currentPage);
-
+  const [totalPages] = useState<{ [key: string]: number }>({
+    "1": calculateTotalPages(toolsItems),
+    "2": calculateTotalPages(youtubeItems),
+    "3": calculateTotalPages(techItems),
+    "4": calculateTotalPages(inspirationItems),
+    "5": calculateTotalPages(fontsItems),
+  });
 // Repeat for other tabs...
 
 
@@ -279,7 +286,7 @@ const Tabs: React.FC = () => {
         }}
       />
     </PaginationItem>
-    {Array.from({ length: calculateTotalPages(toolsItems) }, (_, index) => (
+    {Array.from({ length: totalPages[selectedTab] }, (_, index) => (
       <PaginationItem key={index}>
         <PaginationLink
           href="#"
@@ -300,7 +307,7 @@ const Tabs: React.FC = () => {
       />
     </PaginationItem>
   </PaginationContent>
-</Pagination>
+</Pagination> 
 
 
     </div>
