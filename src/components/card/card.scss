@@ -37,16 +37,19 @@
       }
     }
     .card-text {
-      font-size: 25px;
-      font-weight: 1500;
+      font-size: 20px;
       opacity: 0;
       position: absolute;
-      height: 30px;
       padding: 10px;
       text-align: center;
       transition: ease-out 0.25s;
-      .card-title {
-        color: rgb(85, 151, 76);
+      width: auto;
+      .card-name {
+        overflow: auto;
+        color: rgb(103, 103, 110);
+        font-weight: 1500;
+      }
+      .card-description{
       }
     }
   }
