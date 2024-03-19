@@ -74,7 +74,7 @@ const Tabs: React.FC = () => {
   const inspiration = getItemsForCurrentPage(inspirationItems);
   const fonts = getItemsForCurrentPage(fontsItems);
   
-  const [totalPages, setTotalPages] = useState<{ [key: string]: number }>({
+  const [totalPages] = useState<{ [key: string]: number }>({
     "1": calculateTotalPages(toolsItems),
     "2": calculateTotalPages(youtubeItems),
     "3": calculateTotalPages(techItems),
