@@ -1,9 +1,10 @@
-import { Helmet } from 'react-helmet';
-import ReactGA from 'react-ga';
 import './App.scss';
+import ReactGA from 'react-ga';
+import { useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 import Tabs from './components/tabs/Tabs';
 import Layout from './components/layout/Layout';
-import { useEffect } from 'react';
+import { Analytics } from "@vercel/analytics/react"
 
 function App() {
   ReactGA.initialize('G-J2GPDS11S3');
@@ -28,6 +29,7 @@ function App() {
           <meta property="og:image" content="./src/assets/images/logo2.png" />
         </Helmet>
         <Tabs />
+        <Analytics/>
       </div>
     </Layout>
   );
