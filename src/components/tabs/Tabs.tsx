@@ -1,4 +1,14 @@
 import React, { useState } from "react";
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+
 import { Resources } from "../../constants/constants";
 
 import Card from "../card/Card";
@@ -6,9 +16,68 @@ import "./tabs.scss";
 
 const Tabs: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState(1);
+  const [currentPage, setCurrentPage] = useState<{ [key: string]: number }>({
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+  });
+  
+
+  const itemsPerPage = 10;
   const handleTabChange = (tabIndex: number) => {
     setSelectedTab(tabIndex);
   };
+  const handlePageChange = (
+    page: number,
+    event: React.MouseEvent<HTMLAnchorElement>
+  ) => {
+    event.preventDefault(); // Prevent the default action of the event
+    console.log(`Changing page to ${page} for tab ${selectedTab}`);
+    setCurrentPage((prevCurrentPage) => ({
+      ...prevCurrentPage,
+      [selectedTab]: page,
+    }));
+  };
+  
+
+
+  // Example function to calculate total pages based on the number of items
+  const calculateTotalPages = (items: any[]) => {
+    const totalPages = Math.ceil(items.length / itemsPerPage);
+    return totalPages > 0 ? totalPages : 1; // Ensure at least one page
+  };
+  
+  // Example function to get items for the current page
+  const getItemsForCurrentPage = (items: any[]) => {
+    const startIndex = (currentPage[selectedTab] - 1) * itemsPerPage;
+    const endIndex = Math.min(startIndex + itemsPerPage, items.length);
+    return items.slice(startIndex, endIndex);
+  };
+  
+
+  
+
+  // Example usage
+  const toolsItems = Object.values(Resources.tools);
+  const youtubeItems = Object.values(Resources.youtube);
+  const techItems = Object.values(Resources.technologies);
+  const inspirationItems = Object.values(Resources.inspiration);
+  const fontsItems = Object.values(Resources.fonts);
+
+  const tools = getItemsForCurrentPage(toolsItems);
+  const youtube = getItemsForCurrentPage(youtubeItems);
+  const tech = getItemsForCurrentPage(techItems);
+  const inspiration = getItemsForCurrentPage(inspirationItems);
+  const fonts = getItemsForCurrentPage(fontsItems);
+  
+
+  console.log("Current page:", currentPage);
+
+// Repeat for other tabs...
+
+
   return (
     <div className="tabs">
       <input
@@ -154,26 +223,30 @@ const Tabs: React.FC = () => {
         <div className="indicator"></div>
       </div>
       <div className="content">
+        {/* {selectedTab === 1 && ( */}
         <section>
           <h2>Tools</h2>
           <div className="card-container">
-            {Object.values(Resources.tools).map((data, index) => (
+            {tools.map((data, index) => (
               <Card key={index} data={data} />
             ))}
           </div>
         </section>
+        {/* )} */}
+        {/* {selectedTab === 2 && ( */}
         <section>
           <h2>Youtube</h2>
           <div className="card-container">
-            {Object.values(Resources.youtube).map((data, index) => (
+            {youtube.map((data, index) => (
               <Card key={index} data={data} />
             ))}
           </div>
         </section>
+        {/* )} */}
         <section>
           <h2>Technologies</h2>
           <div className="card-container">
-            {Object.values(Resources.technologies).map((data, index) => (
+            {tech.map((data, index) => (
               <Card key={index} data={data} />
             ))}
           </div>
@@ -181,21 +254,56 @@ const Tabs: React.FC = () => {
         <section>
           <h2>Inspiration</h2>
           <div className="card-container">
-            {Object.values(Resources.inspiration).map((data, index) => {
-              return <Card key={index} data={data} />;
-            })}
+            {inspiration.map((data, index) => (
+              <Card key={index} data={data} />
+            ))}
           </div>
         </section>
 
         <section>
           <h2>Fonts</h2>
           <div className="card-container">
-            {Object.values(Resources.fonts).map((data, index) => (
+            {fonts.map((data, index) => (
               <Card key={index} data={data} />
             ))}
           </div>
         </section>
       </div>
+      <Pagination>
+  <PaginationContent>
+    <PaginationItem>
+      <PaginationPrevious
+        href="#"
+        onClick={(event) => {
+          event.preventDefault();
+          handlePageChange(currentPage[selectedTab] - 1, event);
+        }}
+      />
+    </PaginationItem>
+    {Array.from({ length: calculateTotalPages(toolsItems) }, (_, index) => (
+      <PaginationItem key={index}>
+        <PaginationLink
+          href="#"
+          onClick={(event) => handlePageChange(index + 1, event)}
+          isActive={currentPage[selectedTab] === index + 1}
+        >
+          {index + 1}
+        </PaginationLink>
+      </PaginationItem>
+    ))}
+    <PaginationItem>
+      <PaginationNext
+        href="#"
+        onClick={(event) => {
+          event.preventDefault();
+          handlePageChange(currentPage[selectedTab] + 1, event);
+        }}
+      />
+    </PaginationItem>
+  </PaginationContent>
+</Pagination>
+
+
     </div>
   );
 };
