@@ -15,7 +15,7 @@ $secondary: $accent-inactive;
 
 /* tab setting */
 $tab-count: 5;
-$indicator-width: 100px;
+$indicator-width: 50%;
 $indicator-height: 4px;
 
 /* breakpoints */
@@ -73,7 +73,7 @@ body {
   left: 50%;
   transform: translateX(-50%);
   position: relative;
-  padding: 50px;
+  // padding: 50px;
   padding-bottom: 80px;
   width: 90%;
   // height: 250px;
