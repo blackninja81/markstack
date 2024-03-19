@@ -5,6 +5,7 @@ import { Helmet } from 'react-helmet';
 import Tabs from './components/tabs/Tabs';
 import Layout from './components/layout/Layout';
 import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 function App() {
   ReactGA.initialize('G-J2GPDS11S3');
@@ -30,6 +31,7 @@ function App() {
         </Helmet>
         <Tabs />
         <Analytics/>
+        <SpeedInsights />
       </div>
     </Layout>
   );
