@@ -17,7 +17,7 @@ function App() {
           <meta property="og:description" content="Curated list of web development tools" />
           <meta property="og:type" content="website" />
           <meta property="og:url" content="https://markstack.vercel.app/" />
-          <meta property="og:image" content="./src/assets/images/logo.png" />
+          <meta property="og:image" content="./src/assets/images/logo2.png" />
         </Helmet>
         <Tabs />
       </div>
