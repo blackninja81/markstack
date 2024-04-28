@@ -176,8 +176,13 @@ export const Resources = {
         label: "Tiny png",
         desciption:"Smart WebP, PNG and JPEG Compression",
         link: "https://tinypng.com/",
-      }
-      ,
+      },
+      towebp: {
+        image:"assets/images/screenshots/Screenshot42.webp",
+        label:"To WebP",
+        desciption:"Batch convert from JPG, PNG, GIF, SVG, ICO, BMP, and AVIF to WebP",
+        link:"https://towebp.io/"
+      },
       iconify: {
         image: "/assets/images/screenshots/screenshot28.webp",
         label: "Iconify",
@@ -187,9 +192,23 @@ export const Resources = {
       gradient: {
         image: "/assets/images/screenshots/screenshot29.webp",
         label: "Gradient",
-        desciption:"Make backgrounf gradients",
+        desciption:"Make background gradients",
         link: "https://cssgradient.io/",
-      }
+      },
+      scrollbars: {
+        image:"assets/images/screenshots/Screenshot40.webp",
+        label:"Scrollbar.app",
+        desciption:"Customize Page scrollbars",
+        link:"https://scrollbar.app/"
+      },
+      dropzone: {
+        image:"assets/images/screenshots/Screenshot41.webp",
+        label:"DropZone",
+        desciption:"The most popular drag and drop JavaScript library",
+        link:"https://www.dropzone.dev/"
+      },
+      
+
       
     },
     youtube: {
@@ -348,31 +367,31 @@ export const Resources = {
       fontjoy: {
         image: "/assets/images/screenshots/screenshot15.webp",
         label: "Font Joy",
-        desciption:"Generate font combinations",
+        desciption:"",
         link: "https://fontjoy.com/",
       },
       googlefonts: {
         image: "/assets/images/screenshots/screenshot30.webp",
         label: "Google Fonts",
-        desciption:"Collection of fonts by google",
+        desciption:"",
         link: "https://fonts.google.com/",
       } ,
       dafont: {
         image: "/assets/images/screenshots/screenshot31.webp",
         label: "Dafont",
-        desciption:"Collection of many fonts",
+        desciption:"",
         link: "https://www.dafont.com/",
       },
       fontshare: {
         image: "/assets/images/screenshots/screenshot32.webp",
         label: "Fontshare",
-        desciption:"Collection of fonts",
+        desciption:"",
         link: "https://www.fontshare.com/",
       },
       uncut: {
         image: "/assets/images/screenshots/screenshot33.webp",
         label: "Uncut",
-        desciption:"Collection of fonts",
+        desciption:"",
         link: "https://uncut.wtf/",
       }    
     }
