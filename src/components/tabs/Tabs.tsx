@@ -64,7 +64,7 @@ const Tabs: React.FC = () => {
   // Example usage
   const toolsItems = Object.values(Resources.tools);
   const youtubeItems = Object.values(Resources.youtube);
-  const techItems = Object.values(Resources.technologies);
+  const techItems = Object.values(Resources.uilibrary);
   const inspirationItems = Object.values(Resources.inspiration);
   const fontsItems = Object.values(Resources.fonts);
 
@@ -179,7 +179,7 @@ const Tabs: React.FC = () => {
               </g>
             </svg>
             <br />
-            <span>Technologies</span>
+            <span>UI Libraries</span>
           </label>
         </li>
         {/* {" "} */}
