@@ -42,7 +42,7 @@ const Card: React.FC<CardProps> = ({ data }) => {
         </div>
         <div className="card-text">
           <span className="card-name">
-            <h3 className="card-heading">{data.label}</h3>
+            <span className="card-heading">{data.label}</span>
           </span>
           <span className="card-description">{data.desciption}</span>
         </div>
