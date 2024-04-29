@@ -121,9 +121,9 @@ const Tabs: React.FC = () => {
         checked={selectedTab === 5}
         onChange={() => handleTabChange(5)}
       />
-      <ul>
+      <ul role="tablist">
         <li title="resources">
-          <label htmlFor="tab1" role="tablist">
+          <label htmlFor="tab1" role="tab">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="2em"
@@ -140,7 +140,7 @@ const Tabs: React.FC = () => {
           </label>
         </li>
         <li title="youtube">
-          <label htmlFor="tab2" role="tablist">
+          <label htmlFor="tab2" role="tab">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="2em"
@@ -157,7 +157,7 @@ const Tabs: React.FC = () => {
           </label>
         </li>
         <li title="technologies">
-          <label htmlFor="tab3" role="tablist">
+          <label htmlFor="tab3" role="tab">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="2em"
@@ -184,7 +184,7 @@ const Tabs: React.FC = () => {
         </li>
         {/* {" "} */}
         <li title="inspiration">
-          <label htmlFor="tab4" role="tablist">
+          <label htmlFor="tab4" role="tab">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="2em"
@@ -207,7 +207,7 @@ const Tabs: React.FC = () => {
           </label>
         </li>
         <li title="fonts">
-          <label htmlFor="tab5" role="tablist">
+          <label htmlFor="tab5" role="tab">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="2em"
