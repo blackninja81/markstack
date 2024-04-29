@@ -1,9 +1,9 @@
 import "./card.scss";
-import { useState } from 'react';
-import loading from '../../../public/assets/images/logo.png';
+import { useState } from "react";
+import loading from "../../../public/assets/images/logo.png";
 
 interface CardProps {
-  data: { 
+  data: {
     image: string;
     label: string;
     link: string;
@@ -20,7 +20,9 @@ const Card: React.FC<CardProps> = ({ data }) => {
   };
 
   // Function to handle image error
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+  const handleImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>
+  ) => {
     e.currentTarget.src = loading; // Replace with loading image if original image fails to load
   };
 
@@ -28,7 +30,8 @@ const Card: React.FC<CardProps> = ({ data }) => {
     <a href={data.link} target="_blank">
       <div className="card-body">
         <div className="card-image">
-          {!imageLoaded && <img src={loading} alt="Loading" />} {/* Display loading image if not loaded */}
+          {!imageLoaded && <img src={loading} alt="Loading" />}{" "}
+          {/* Display loading image if not loaded */}
           <img
             src={data.image}
             alt={data.label}
@@ -38,8 +41,10 @@ const Card: React.FC<CardProps> = ({ data }) => {
           />
         </div>
         <div className="card-text">
-          <div className="card-name"><h3><b>{data.label}</b></h3></div>
-          <div className="card-description">{data.desciption}</div>
+          <span className="card-name">
+            <h3 className="card-heading">{data.label}</h3>
+          </span>
+          <span className="card-description">{data.desciption}</span>
         </div>
       </div>
     </a>

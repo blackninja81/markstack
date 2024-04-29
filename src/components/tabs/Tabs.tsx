@@ -123,7 +123,7 @@ const Tabs: React.FC = () => {
       />
       <ul>
         <li title="resources">
-          <label htmlFor="tab1" role="button">
+          <label htmlFor="tab1" role="Pseudo HTML">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="2em"
@@ -140,7 +140,7 @@ const Tabs: React.FC = () => {
           </label>
         </li>
         <li title="youtube">
-          <label htmlFor="tab2" role="button">
+          <label htmlFor="tab2" role="Pseudo HTML">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="2em"
@@ -157,7 +157,7 @@ const Tabs: React.FC = () => {
           </label>
         </li>
         <li title="technologies">
-          <label htmlFor="tab3" role="button">
+          <label htmlFor="tab3" role="Pseudo HTML">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="2em"
@@ -184,7 +184,7 @@ const Tabs: React.FC = () => {
         </li>
         {/* {" "} */}
         <li title="inspiration">
-          <label htmlFor="tab4" role="button">
+          <label htmlFor="tab4" role="Pseudo HTML">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="2em"
@@ -207,7 +207,7 @@ const Tabs: React.FC = () => {
           </label>
         </li>
         <li title="fonts">
-          <label htmlFor="tab5" role="button">
+          <label htmlFor="tab5" role="Pseudo HTML">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="2em"
