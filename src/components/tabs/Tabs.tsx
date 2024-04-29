@@ -114,7 +114,7 @@ const Tabs: React.FC = () => {
           { id: 5, title: "Fonts", image: fontsImage },
         ].map((tab) => (
           <li key={tab.id} title={tab.title.toLowerCase()}>
-            <label htmlFor={`tab${tab.id}`} role="Widget">
+            <label htmlFor={`tab${tab.id}`}>
               <img
                 src={tab.image}
                 alt={tab.title.toLowerCase()}
