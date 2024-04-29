@@ -211,6 +211,104 @@ export const Resources = {
 
       
     },
+    uilibrary: {
+      nextui: {
+        image:"assets/images/screenshots/screenshot43.webp",
+        label:"Next UI",
+        description:"",
+        link:"https://nextui.org/"
+      },
+      radix: {
+        image:"assets/images/screenshots/screenshot44.webp",
+        label:"Radix UI",
+        description:"",
+        link:" https://www.radix-ui.com"
+      },
+      daisy: {
+        image:"assets/images/screenshots/screenshot45.webp",
+        label:"Daisy UI",
+        description:"",
+        link:"https://daisyui.com"
+      },
+      shadcn: {
+        image:"assets/images/screenshots/screenshot46.webp",
+        label:"Shadcn UI",
+        description:"",
+        link:""
+      },
+      mantine: {
+        image:"assets/images/screenshots/screenshot47.webp",
+        label:"Mantine UI",
+        description:"",
+        link:"https://mantine.dev/"
+      },
+      antdesign: {
+        image:"assets/images/screenshots/screenshot48.webp",
+        label:"Ant Design",
+        description:"",
+        link:"https://ant.design/"
+      },
+      material: {
+        image:"assets/images/screenshots/screenshot49.webp",
+        label:"Material UI",
+        description:"",
+        link:"https://mui.com/material-ui/"
+      },
+      bootstrap: {
+        image:"assets/images/screenshots/screenshot50.webp",
+        label:"Bootstrap",
+        description:"",
+        link:"https://getbootstrap.com/"
+      },
+      chakra: {
+        image:"assets/images/screenshots/screenshot51.webp",
+        label:"Chakra UI",
+        description:"",
+        link:"https://v2.chakra-ui.com/"
+      },
+      prime: {
+        image:"assets/images/screenshots/screenshot52.webp",
+        label:"Prime React",
+        description:"",
+        link:"https://primereact.org/"
+      },
+      semantic: {
+        image:"assets/images/screenshots/screenshot53.webp",
+        label:"Semantic UI",
+        description:"",
+        link:"https://semantic-ui.com/"
+      },
+      onsen: {
+        image:"assets/images/screenshots/screenshot54.webp",
+        label:"Onsen UI",
+        description:"",
+        link:"https://onsen.io/"
+      },
+      core: {
+        image:"assets/images/screenshots/screenshot55.webp",
+        label:"Core UI",
+        description:"",
+        link:"https://coreui.io/"
+      },
+      reactsuite: {
+        image:"assets/images/screenshots/screenshot56.webp",
+        label:"React Suite",
+        description:"",
+        link:"https://rsuitejs.com/"
+      },
+      blueprint: {
+        image:"assets/images/screenshots/screenshot57.webp",
+        label:"Blueprint Js",
+        description:"",
+        link:"https://blueprintjs.com/"
+      },
+      storybook: {
+        image:"assets/images/screenshots/screenshot58.webp",
+        label:"Storybook Js",
+        description:"",
+        link:"https://storybook.js.org/"
+      },
+    },
     youtube: {
         traversymedia: {
             image: "/assets/youtube/TraversyMedia.jpg",

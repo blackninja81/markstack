@@ -13,11 +13,11 @@
     justify-content: center;
     overflow: hidden;
     /* From https://css.glass */
-background: rgba(255, 255, 255, 0);
-border-radius: 16px;
-box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-backdrop-filter: blur(20px);
--webkit-backdrop-filter: blur(20px);
+    background: rgba(255, 255, 255, 0);
+    border-radius: 16px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
     border-radius: 20px;
     border: 1px solid rgb(66, 64, 64);
     transition: 0.3s;
@@ -27,7 +27,7 @@ backdrop-filter: blur(20px);
     &:hover .card-image {
       opacity: 0.05;
     }
-    &:hover{
+    &:hover {
       border: 1px solid rgb(255, 255, 255);
     }
 
@@ -40,7 +40,6 @@ backdrop-filter: blur(20px);
         height: 100%;
         width: 100%;
         object-fit: contain;
-        border-radius: 10px;
       }
     }
     .card-text {
@@ -56,11 +55,10 @@ backdrop-filter: blur(20px);
         color: rgb(103, 103, 110);
         font-weight: 1500;
       }
-      .card-description{
+      .card-description {
         display: flex;
         flex-wrap: wrap;
       }
-      
     }
   }
 }
