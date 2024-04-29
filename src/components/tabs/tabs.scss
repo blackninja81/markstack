@@ -71,11 +71,12 @@ body {
 
 .tabs {
   left: 50%;
+  overflow: hidden;
   transform: translateX(-50%);
   position: relative;
   // padding: 50px;
   padding-bottom: 80px;
-  width: 90%;
+  width: 98%;
   border-radius: 20px;
   min-width: #{$tab-count * 60px};
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
@@ -167,7 +168,6 @@ body {
   
   .content {
     margin-top: 30px;
-    
     section {
       display: none;
       animation: {
