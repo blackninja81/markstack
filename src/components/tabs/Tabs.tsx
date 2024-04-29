@@ -77,12 +77,6 @@ const Tabs: React.FC = () => {
   const { data: inspiration } = useQuery(["inspiration"], () => fetchData("inspiration"));
   const { data: fonts } = useQuery(["fonts"], () => fetchData("fonts"));
 
-  // const tools = getItemsForCurrentPage(toolsItems);
-  // const youtube = getItemsForCurrentPage(youtubeItems);
-  // const tech = getItemsForCurrentPage(techItems);
-  // const inspiration = getItemsForCurrentPage(inspirationItems);
-  // const fonts = getItemsForCurrentPage(fontsItems);
-
   const [totalPages] = useState<{ [key: string]: number }>({
     "1": calculateTotalPages(toolsItems),
     "2": calculateTotalPages(youtubeItems),
@@ -94,7 +88,7 @@ const Tabs: React.FC = () => {
   const sections = [
     { title: "Tools", data: tools },
     { title: "Youtube", data: youtube },
-    { title: "Technologies", data: tech },
+    { title: "UI Libraries", data: tech },
     { title: "Inspiration", data: inspiration },
     { title: "Fonts", data: fonts },
   ];
