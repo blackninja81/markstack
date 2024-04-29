@@ -8,6 +8,25 @@ import uiImage from "../../assets/icons/resource.svg";
 import inspirationImage from "../../assets/icons/inspiration.svg";
 import fontsImage from "../../assets/icons/fonts.svg";
 import "./tabs.scss";
+import { useQuery } from "react-query";
+
+
+const fetchData = async (key: any) => {
+  switch (key) {
+    case "tools":
+      return Object.values(Resources.tools);
+    case "youtube":
+      return Object.values(Resources.youtube);
+    case "tech":
+      return Object.values(Resources.uilibrary);
+    case "inspiration":
+      return Object.values(Resources.inspiration);
+    case "fonts":
+      return Object.values(Resources.fonts);
+    default:
+      return [];
+  }
+};
 
 const Tabs: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState(1);
@@ -52,11 +71,17 @@ const Tabs: React.FC = () => {
   const inspirationItems = Object.values(Resources.inspiration);
   const fontsItems = Object.values(Resources.fonts);
 
-  const tools = getItemsForCurrentPage(toolsItems);
-  const youtube = getItemsForCurrentPage(youtubeItems);
-  const tech = getItemsForCurrentPage(techItems);
-  const inspiration = getItemsForCurrentPage(inspirationItems);
-  const fonts = getItemsForCurrentPage(fontsItems);
+  const { data: tools } = useQuery(["tools"], () => fetchData("tools"));
+  const { data: youtube } = useQuery(["youtube"], () => fetchData("youtube"));
+  const { data: tech } = useQuery(["tech"], () => fetchData("tech"));
+  const { data: inspiration } = useQuery(["inspiration"], () => fetchData("inspiration"));
+  const { data: fonts } = useQuery(["fonts"], () => fetchData("fonts"));
+
+  // const tools = getItemsForCurrentPage(toolsItems);
+  // const youtube = getItemsForCurrentPage(youtubeItems);
+  // const tech = getItemsForCurrentPage(techItems);
+  // const inspiration = getItemsForCurrentPage(inspirationItems);
+  // const fonts = getItemsForCurrentPage(fontsItems);
 
   const [totalPages] = useState<{ [key: string]: number }>({
     "1": calculateTotalPages(toolsItems),
@@ -121,7 +146,7 @@ const Tabs: React.FC = () => {
           <section key={index}>
             <h2>{section.title}</h2>
             <div className="card-container">
-              {section.data.map((data, dataIndex) => (
+              {getItemsForCurrentPage(section.data || []).map((data, dataIndex) => (
                 <Card key={dataIndex} data={data} />
               ))}
             </div>

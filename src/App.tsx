@@ -5,6 +5,9 @@ import { Helmet } from 'react-helmet';
 import Tabs from './components/tabs/Tabs';
 import Layout from './components/layout/Layout';
 import { Analytics } from "@vercel/analytics/react"
+import { QueryClient, QueryClientProvider } from "react-query";
+
+const queryClient = new QueryClient();
 
 function App() {
   ReactGA.initialize('G-J2GPDS11S3');
@@ -14,6 +17,7 @@ function App() {
   }, []);
 
   return (
+    <QueryClientProvider client={queryClient}>
     <Layout>
       <div>
         <Helmet>
@@ -32,6 +36,7 @@ function App() {
         <Analytics/>
       </div>
     </Layout>
+    </QueryClientProvider>
   );
 }
 
