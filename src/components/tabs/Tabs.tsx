@@ -19,6 +19,8 @@ const fetchData = async (key: any) => {
       return Object.values(Resources.youtube);
     case "tech":
       return Object.values(Resources.uilibrary);
+      case "techstack":
+      return Object.values(Resources.technologies);
     case "inspiration":
       return Object.values(Resources.inspiration);
     case "fonts":
@@ -68,22 +70,25 @@ const Tabs: React.FC = () => {
 
   const toolsItems = Object.values(Resources.tools);
   const youtubeItems = Object.values(Resources.youtube);
-  const techItems = Object.values(Resources.uilibrary);
+  const uiItems = Object.values(Resources.uilibrary);
   const inspirationItems = Object.values(Resources.inspiration);
   const fontsItems = Object.values(Resources.fonts);
+  const techItems = Object.values(Resources.technologies);
 
   const { data: tools } = useQuery(["tools"], () => fetchData("tools"));
   const { data: youtube } = useQuery(["youtube"], () => fetchData("youtube"));
   const { data: tech } = useQuery(["tech"], () => fetchData("tech"));
   const { data: inspiration } = useQuery(["inspiration"], () => fetchData("inspiration"));
   const { data: fonts } = useQuery(["fonts"], () => fetchData("fonts"));
+  const { data: techstack } = useQuery(["techstack"], () => fetchData("techstack"));
 
   const [totalPages] = useState<{ [key: string]: number }>({
     "1": calculateTotalPages(toolsItems),
     "2": calculateTotalPages(youtubeItems),
-    "3": calculateTotalPages(techItems),
+    "3": calculateTotalPages(uiItems),
     "4": calculateTotalPages(inspirationItems),
     "5": calculateTotalPages(fontsItems),
+    "6": calculateTotalPages(techItems),
   });
 
   const sections = [
@@ -92,11 +97,12 @@ const Tabs: React.FC = () => {
     { title: "UI Libraries", data: tech },
     { title: "Inspiration", data: inspiration },
     { title: "Fonts", data: fonts },
+    { title: "Techstack", data: techstack },
   ];
 
   return (
     <div className="tabs">
-      {Array.from({ length: 5 }, (_, index) => (
+      {Array.from({ length: 6 }, (_, index) => (
         <input
           key={index}
           type="radio"
@@ -113,6 +119,7 @@ const Tabs: React.FC = () => {
           { id: 3, title: "UI Libraries", image: uiImage },
           { id: 4, title: "Inspiration", image: inspirationImage },
           { id: 5, title: "Fonts", image: fontsImage },
+          { id: 6, title: "TechStack", image: uiImage },
         ].map((tab) => (
           <li key={tab.id} title={tab.title.toLowerCase()}>
             <label htmlFor={`tab${tab.id}`}>
