@@ -6,6 +6,18 @@ export const Resources = {
         desciption:"create custom shapes to divide sections ",
         link: "https://www.shapedivider.app/",
       },
+      blobmaker: {
+        image:"assets/images/screenshots/screenshot 75.webp",
+        label:"Blob Maker",
+        desciption:"",
+        link:"https://www.blobmaker.app/"
+      },
+      pattern: {
+        image:"assets/images/screenshots/screenshot 76.webp",
+        label:"Pattern CSS",
+        desciption:"CSS only library to fill your empty background with beautiful patterns. ",
+        link:"https://bansal.io/pattern-css"
+      },
       animejs: {
         image: "/assets/images/screenshots/screenshot2.webp",
         label: "AnimeJs",
@@ -38,19 +50,30 @@ export const Resources = {
         desciption:"glass background effect",
         link: "https://css.glass/",
       }
-      ,
-      colors: {
-        image: "/assets/images/screenshots/screenshot7.webp",
-        label: "Color Palettes",
-        desciption:"Color palettes from different sites",
-        link: "https://materialui.co/",
-      }
-      ,
+      ,      
       undraw: {
         image: "/assets/images/screenshots/screenshot8.webp",
         label: "Un Draw",
         desciption:"Multiple web illustrations",
         link: "https://undraw.co/",
+      },
+      fontawsome: {
+        image:"assets/images/screenshots/screenshot 66.webp",
+        label:"FontAwsome",
+        desciption:"",
+        link:"https://fontawesome.com/icons"
+      },
+      iconmoon: {
+        image:"assets/images/screenshots/screenshot 67.webp",
+        label:"Icon Moon",
+        desciption:"",
+        link:"https://icomoon.io/"
+      },
+      materialicons: {
+        image:"assets/images/screenshots/screenshot 68.webp",
+        label:"Material Icons",
+        desciption:"",
+        link:"https://fonts.google.com/icons"
       }
       ,
       icons8: {
@@ -59,13 +82,7 @@ export const Resources = {
         desciption:"Curated graphics, design apps, and AI tools",
         link: "https://icons8.com/",
       },
-      reactreveal: {
-        image: "/assets/images/screenshots/screenshot10.webp",
-        label: "React Reveal",
-        desciption:"Animated components for React apps",
-        link: "https://react-awesome-reveal.morello.dev/",
-      }
-      ,
+      
       lottifiles: {
         image: "/assets/images/screenshots/screenshot11.webp",
         label: "Lotti Files",
@@ -73,18 +90,42 @@ export const Resources = {
         link: "https://lottiefiles.com/",
       }
       ,
-      mockaroo: {
-        image: "/assets/images/screenshots/screenshot12.webp",
-        label: "Mockaroo",
-        desciption:"Create Mock data for you app",
-        link: "https://mockaroo.com/",
-      }
-      ,
+      iconify: {
+        image: "/assets/images/screenshots/screenshot28.webp",
+        label: "Iconify",
+        desciption:"Over 200,000 open source vector icons",
+        link: "https://iconify.design/",
+      },
+      colormind: {
+        image:"assets/images/screenshots/screenshot 71.webp",
+        label:"Color Mind",
+        desciption:"",
+        link:"http://colormind.io/"
+      },
+      colorspace: {
+        image:"assets/images/screenshots/screenshot 72.webp",
+        label:"Color Space",
+        desciption:"",
+        link:"https://mycolor.space/"
+      },
+      coolbackgrounds: {
+        image:"assets/images/screenshots/screenshot 74.webp",
+        label:"Cool Backgrounds",
+        desciption:"",
+        link:"https://coolbackgrounds.io/"
+      },
       realtimecolors: {
         image: "/assets/images/screenshots/screenshot14.webp",
         label: "Realtime Colors",
         desciption:"visualize colors and fonts on a real site",
         link: "https://www.realtimecolors.com/?colors=050315-fbfbfe-2f27ce-dedcff-433bff&fonts=Poppins-Poppins",
+      }
+      ,
+      colors: {
+        image: "/assets/images/screenshots/screenshot7.webp",
+        label: "Color Palettes",
+        desciption:"Color palettes from different sites",
+        link: "https://materialui.co/",
       }
       ,
       coolors: {
@@ -94,6 +135,12 @@ export const Resources = {
         link: "https://coolors.co/",
       }
       ,
+      gradient: {
+        image: "/assets/images/screenshots/screenshot29.webp",
+        label: "Gradient",
+        desciption:"Make background gradients",
+        link: "https://cssgradient.io/",
+      },
       haikei: {
         image: "/assets/images/screenshots/screenshot16.webp",
         label: "Haikei",
@@ -171,6 +218,55 @@ export const Resources = {
         link: "https://removal.ai/",
       }
       ,
+         
+      scrollbars: {
+        image:"assets/images/screenshots/screenshot40.webp",
+        label:"Scrollbar.app",
+        desciption:"Customize Page scrollbars",
+        link:"https://scrollbar.app/"
+      },
+      dropzone: {
+        image:"assets/images/screenshots/screenshot41.webp",
+        label:"DropZone",
+        desciption:"The most popular drag and drop JavaScript library",
+        link:"https://www.dropzone.dev/"
+      },   
+      htmlcheatsheet: {
+        image:"assets/images/screenshots/screenshot 59.webp",
+        label:"HTML Cheat Sheet",
+        desciption:"Contains resources to learn HTML, CSS and Javascript",
+        link:"https://htmlcheatsheet.com/"
+      }, 
+      mdn: {
+        image:"assets/images/screenshots/screenshot 60.webp",
+        label:"DropZone",
+        desciption:"Documenting web technologies, including CSS, HTML, and JavaScript",
+        link:"https://developer.mozilla.org/en-US/"
+      }, 
+      superherojs: {
+        image:"assets/images/screenshots/screenshot 61.webp",
+        label:"Superhero Js",
+        desciption:"Collection of articles, videos and presentations",
+        link:"http://superherojs.com/"
+      }, 
+      gridcheatsheet: {
+        image:"assets/images/screenshots/screenshot 62.webp",
+        label:"Grid Cheatsheet",
+        desciption:"",
+        link:"https://grid.malven.co/"
+      }, 
+      flexcheatsheet: {
+        image:"assets/images/screenshots/screenshot 63.webp",
+        label:"Flex Cheatsheet",
+        desciption:"",
+        link:"https://flexbox.malven.co/"
+      }, 
+      stackoverflow: {
+        image:"assets/images/screenshots/screenshot 64.webp",
+        label:"Stack Overflow",
+        desciption:"",
+        link:"https://stackoverflow.com/"
+      },
       tinypng: {
         image: "/assets/images/screenshots/screenshot27.webp",
         label: "Tiny png",
@@ -178,37 +274,50 @@ export const Resources = {
         link: "https://tinypng.com/",
       },
       towebp: {
-        image:"assets/images/screenshots/Screenshot42.webp",
+        image:"assets/images/screenshots/screenshot42.webp",
         label:"To WebP",
         desciption:"Batch convert from JPG, PNG, GIF, SVG, ICO, BMP, and AVIF to WebP",
         link:"https://towebp.io/"
-      },
-      iconify: {
-        image: "/assets/images/screenshots/screenshot28.webp",
-        label: "Iconify",
-        desciption:"Over 200,000 open source vector icons",
-        link: "https://iconify.design/",
-      },
-      gradient: {
-        image: "/assets/images/screenshots/screenshot29.webp",
-        label: "Gradient",
-        desciption:"Make background gradients",
-        link: "https://cssgradient.io/",
-      },
-      scrollbars: {
-        image:"assets/images/screenshots/Screenshot40.webp",
-        label:"Scrollbar.app",
-        desciption:"Customize Page scrollbars",
-        link:"https://scrollbar.app/"
-      },
-      dropzone: {
-        image:"assets/images/screenshots/Screenshot41.webp",
-        label:"DropZone",
-        desciption:"The most popular drag and drop JavaScript library",
-        link:"https://www.dropzone.dev/"
-      },
+      },  
+      pixabay: {
+        image:"assets/images/screenshots/screenshot 65.webp",
+        label:"Pixabay",
+        desciption:"",
+        link:"https://pixabay.com/"
+      },  
       
-
+      pexels: {
+        image:"assets/images/screenshots/screenshot 69.webp",
+        label:"Pexels",
+        desciption:"",
+        link:"https://pexels.com/"
+      },
+      unsplash: {
+        image:"assets/images/screenshots/screenshot 70.webp",
+        label:"Unsplash",
+        desciption:"",
+        link:"https://unsplash.com/"
+      },
+      easings: {
+        image:"assets/images/screenshots/screenshot 73.webp",
+        label:"Easings",
+        desciption:"Easing functions specify the rate of change of a parameter over time.",
+        link:"https://easings.net/"
+      },
+      mockaroo: {
+        image: "/assets/images/screenshots/screenshot12.webp",
+        label: "Mockaroo",
+        desciption:"Create Mock data for you app",
+        link: "https://mockaroo.com/",
+      }
+      ,
+      reactreveal: {
+        image: "/assets/images/screenshots/screenshot10.webp",
+        label: "React Reveal",
+        desciption:"Animated components for React apps",
+        link: "https://react-awesome-reveal.morello.dev/",
+      }
+      ,
       
     },
     uilibrary: {
@@ -393,19 +502,14 @@ export const Resources = {
     },
     technologies: {
         react: {
-            image: "/assets/icons/technologies/react.svg",
+            image: "/assets/icons/technologies/react.webp",
             label: "React",
             link: "https://react.dev/",
           } ,
           nextjs: {
-            image: "/assets/icons/technologies/nextjs.webp",
+            image: "/assets/icons/technologies/next.webp",
             label: "NextJs",
             link: "https://nextjs.org/",
-          } ,
-          github: {
-            image: "/assets/icons/technologies/github.svg",
-            label: "Github",
-            link: "https://github.com/",
           } ,
           framermotion: {
             image: "/assets/icons/technologies/framermotion.webp",
@@ -415,10 +519,10 @@ export const Resources = {
           redux: {
             image: "/assets/icons/technologies/redux.webp",
             label: "redux",
-            link: "https://redux.js.org/",
+            link: "https://react-redux.js.org/",
           } ,
           svelte: {
-            image: "/assets/icons/technologies/svelte.svg",
+            image: "/assets/icons/technologies/svelte.webp",
             label: "Svelte",
             link: "https://svelte.dev/",
           } ,
@@ -426,7 +530,22 @@ export const Resources = {
             image: "/assets/icons/technologies/gsap.webp",
             label: "Gsap",
             link: "https://gsap.com/",
-          } 
+          },
+          animate: {
+            image: "/assets/icons/technologies/animate.webp",
+            label: "AnimateCSS",
+            link: "https://animate.style/",
+          } , 
+          tanstack: {
+            image: "/assets/icons/technologies/tanstack.webp",
+            label: "Tanstack",
+            link: "https://tanstack.com/query/v3",
+          } ,
+          graphql: {
+            image: "/assets/icons/technologies/graphql.webp",
+            label: "GraphQL",
+            link: "https://graphql.org/",
+          } ,
     },
     inspiration: {
         awwwards: {
@@ -458,6 +577,11 @@ export const Resources = {
             image: "/assets/images/screenshots/screenshot39.webp",
             label: "Startup Websites",
             link: "https://www.startupwebsites.co/",
+          }, 
+          dribble: {
+            image: "/assets/images/screenshots/screenshot 77.webp",
+            label: "Dribble",
+            link: "https://dribbble.com/",
           }, 
           
     },
