@@ -239,7 +239,7 @@ export const Resources = {
       }, 
       mdn: {
         image:"assets/images/screenshots/screenshot 60.webp",
-        label:"DropZone",
+        label:"mdn",
         desciption:"Documenting web technologies, including CSS, HTML, and JavaScript",
         link:"https://developer.mozilla.org/en-US/"
       }, 
