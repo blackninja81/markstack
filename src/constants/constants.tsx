@@ -284,6 +284,12 @@ export const Resources = {
         label:"Pixabay",
         desciption:"",
         link:"https://pixabay.com/"
+      },
+      screely: {
+        image:"assets/images/screenshots/screenshot 78.webp",
+        label:"Screely",
+        desciption:"Upgrade your screenshots. Instantly",
+        link:"https://screely.com/"
       },  
       
       pexels: {
