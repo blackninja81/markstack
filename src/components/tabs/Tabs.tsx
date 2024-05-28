@@ -9,10 +9,6 @@ import inspirationImage from "../../assets/icons/inspiration.svg";
 import fontsImage from "../../assets/icons/fonts.svg";
 import "./tabs.scss";
 import { useQuery } from "react-query";
-import {getSanityItems, getSanityCategories} from '../../../utils/sanity/sanity-utils'
-
-const sanity_items =  await getSanityItems()
-const sanity_category = await getSanityCategories()
 
 const fetchData = async (key: any) => {
   switch (key) {
