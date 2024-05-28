@@ -1,13 +1,13 @@
 .card-container {
   display: grid;
   padding: 10px 30px;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
 
   .card-body {
     height: 30vh;
     margin: 10px;
-    min-width: 20vw;
-    max-width: 80vw;
+    // min-width: 20vw;
+    // max-width: 80vw;
     display: flex;
     align-items: center;
     justify-content: center;
