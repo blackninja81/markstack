@@ -1,47 +1,61 @@
 .card-container {
   display: grid;
   padding: 10px 30px;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
 
   .card-body {
-    height: 30vh;
+    height: 25vh;
     margin: 10px;
-    // min-width: 20vw;
-    // max-width: 80vw;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    /* From https://css.glass */
     background: rgba(255, 255, 255, 0);
-    border-radius: 16px;
+    border-radius: 20px;
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border-radius: 20px;
     border: 1px solid rgb(66, 64, 64);
     transition: 0.3s;
+
     &:hover .card-text {
       opacity: 1;
     }
+
     &:hover .card-image {
       opacity: 0.05;
     }
+
     &:hover {
       border: 1px solid rgb(255, 255, 255);
     }
 
     .card-image {
+      position: relative; /* Ensure child elements are positioned relative to this div */
       overflow: hidden;
       transition: ease-out 0.25s;
+      width: 100%; /* Ensure the image div takes the full width of the card */
+      height: 100%; /* Ensure the image div takes the full height of the card */
 
       img {
         opacity: 1;
         height: 100%;
         width: 100%;
-        object-fit: contain;
+        object-fit: cover;
+        display: block; /* Ensures the image behaves as a block element */
+      }
+
+      /* Optional: Style for the loading image */
+      .loading-image {
+        position: absolute; /* Ensures the loading image is positioned relative to the card-image div */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Center the loading image */
+        width: auto;
+        height: auto;
       }
     }
+
     .card-text {
       font-size: 20px;
       opacity: 0;
@@ -50,13 +64,16 @@
       text-align: center;
       transition: ease-out 0.25s;
       width: auto;
+
       .card-name {
         overflow: auto;
         font-weight: 1500;
-        .card-heading{
+
+        .card-heading {
           font-size: 30px;
         }
       }
+
       .card-description {
         color: rgb(187, 187, 189);
         display: flex;
