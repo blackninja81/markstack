@@ -2,11 +2,13 @@ import React, { useState } from "react";
 import { Resources } from "../../constants/constants";
 import TabPagination from "./TabPagination";
 import Card from "../card/Card";
-import technologyImage from "../../assets/icons/technologies.svg";
-import youtubeImage from "../../assets/icons/youtube.svg";
-import uiImage from "../../assets/icons/resource.svg";
-import inspirationImage from "../../assets/icons/inspiration.svg";
-import fontsImage from "../../assets/icons/fonts.svg";
+import technologyImage from "../../assets/icons/tools.png";
+import AI from "../../assets/icons/ai.png";
+import stack from "../../assets/icons/stack.png";
+import youtubeImage from "../../assets/icons/youtube.png";
+import uiImage from "../../assets/icons/ui.png";
+import inspirationImage from "../../assets/icons/bulb.png";
+import fontsImage from "../../assets/icons/fonts.png";
 import "./tabs.scss";
 import { useQuery } from "react-query";
 
@@ -24,6 +26,8 @@ const fetchData = async (key: any) => {
       return Object.values(Resources.inspiration);
     case "fonts":
       return Object.values(Resources.fonts);
+      case "ai":
+      return Object.values(Resources.ai);
     default:
       return [];
   }
@@ -37,7 +41,8 @@ const Tabs: React.FC = () => {
     "3": 1,
     "4": 1,
     "5": 1,
-    "6": 1
+    "6": 1,
+    "7": 1,
   });
 
   const itemsPerPage = 12;
@@ -68,6 +73,7 @@ const Tabs: React.FC = () => {
   };
 
   const toolsItems = Object.values(Resources.tools);
+  const aiItems = Object.values(Resources.ai);
   const youtubeItems = Object.values(Resources.youtube);
   const uiItems = Object.values(Resources.uilibrary);
   const inspirationItems = Object.values(Resources.inspiration);
@@ -75,6 +81,7 @@ const Tabs: React.FC = () => {
   const techItems = Object.values(Resources.technologies);
 
   const { data: tools } = useQuery(["tools"], () => fetchData("tools"));
+  const { data: ai } = useQuery(["ai"], () => fetchData("ai"));
   const { data: youtube } = useQuery(["youtube"], () => fetchData("youtube"));
   const { data: tech } = useQuery(["tech"], () => fetchData("tech"));
   const { data: inspiration } = useQuery(["inspiration"], () => fetchData("inspiration"));
@@ -83,15 +90,17 @@ const Tabs: React.FC = () => {
 
   const [totalPages] = useState<{ [key: string]: number }>({
     "1": calculateTotalPages(toolsItems),
-    "2": calculateTotalPages(youtubeItems),
-    "3": calculateTotalPages(uiItems),
-    "4": calculateTotalPages(inspirationItems),
-    "5": calculateTotalPages(fontsItems),
-    "6": calculateTotalPages(techItems),
+    "2": calculateTotalPages(aiItems),
+    "3": calculateTotalPages(youtubeItems),
+    "4": calculateTotalPages(uiItems),
+    "5": calculateTotalPages(inspirationItems),
+    "6": calculateTotalPages(fontsItems),
+    "7": calculateTotalPages(techItems),
   });
 
   const sections = [
     { title: "Tools", data: tools },
+    { title: "AI", data: ai },
     { title: "Youtube", data: youtube },
     { title: "UI Libraries", data: tech },
     { title: "Inspiration", data: inspiration },
@@ -101,7 +110,7 @@ const Tabs: React.FC = () => {
 
   return (
     <div className="tabs">
-      {Array.from({ length: 6 }, (_, index) => (
+      {Array.from({ length: 7 }, (_, index) => (
         <input
           key={index}
           type="radio"
@@ -114,11 +123,12 @@ const Tabs: React.FC = () => {
       <ul>
         {[
           { id: 1, title: "Resources", image: technologyImage },
-          { id: 2, title: "Youtube", image: youtubeImage },
-          { id: 3, title: "UI Libraries", image: uiImage },
-          { id: 4, title: "Inspiration", image: inspirationImage },
-          { id: 5, title: "Fonts", image: fontsImage },
-          { id: 6, title: "TechStack", image: uiImage },
+          { id: 2, title: "AI", image: AI },
+          { id: 3, title: "Youtube", image: youtubeImage },
+          { id: 4, title: "UI Libraries", image: uiImage },
+          { id: 5, title: "Inspiration", image: inspirationImage },
+          { id: 6, title: "Fonts", image: fontsImage },
+          { id: 7, title: "TechStack", image: stack },
         ].map((tab) => (
           <li key={tab.id} title={tab.title.toLowerCase()}>
             <label htmlFor={`tab${tab.id}`}>
@@ -126,7 +136,7 @@ const Tabs: React.FC = () => {
                 src={tab.image}
                 alt={tab.title.toLowerCase()}
                 style={{
-                  background: "white",
+                  transform: "scale(0.6)",
                   borderRadius: "10px",
                   margin: "0 5px",
                 }}

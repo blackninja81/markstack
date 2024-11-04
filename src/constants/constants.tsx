@@ -63,6 +63,12 @@ export const Resources = {
         desciption:"",
         link:"https://fontawesome.com/icons"
       },
+      feather: {
+        image:"assets/images/screenshots/screenshot84.webp",
+        label:"Feather",
+        desciption:"Simply beautiful open source icons",
+        link:"https://feathericons.com/"
+      },
       iconmoon: {
         image:"assets/images/screenshots/screenshot 67.webp",
         label:"Icon Moon",
@@ -554,6 +560,11 @@ export const Resources = {
           } ,
     },
     inspiration: {
+      wesitevice: {
+        image: "/assets/images/screenshots/screenshot79.webp",
+        label: "WebsiteVice",
+        link: "https://websitevice.com/",
+      },
         awwwards: {
             image: "/assets/images/screenshots/screenshot34.webp",
             label: "Awwwards",
@@ -622,5 +633,27 @@ export const Resources = {
         desciption:"",
         link: "https://uncut.wtf/",
       }    
+    },
+    ai: {
+      chatgpt: {
+        image: "/assets/images/screenshots/screenshot80.webp",
+        label: "ChatGPT",
+        link: "https://chat.openai.com/",
+      },
+      claude: {
+        image: "/assets/images/screenshots/screenshot81.webp",
+        label: "ClaudeAI",
+        link: "https://claude.ai/",
+      },
+      gemini: {
+        image: "/assets/images/screenshots/screenshot82.webp",
+        label: "Gemini",
+        link: "https://gemini.google.com/app",
+      },
+      perplexity: {
+        image: "/assets/images/screenshots/screenshot83.webp",
+        label: "Perplexity",
+        link: "https://www.perplexity.ai/",
+      },
     }
 }
