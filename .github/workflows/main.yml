@@ -71,13 +71,10 @@ jobs:
           }
 
           \$zipFile = '/home/ilqnbdpj/bookmark.johnkaburu.co.ke/' . basename('$DEPLOY_ZIP');
-          \$extractTo = '/home/ilqnbdpj/bookmark.johnkaburu.co.ke';  // Full path for extraction
           
-          // Check if extraction directory exists, if not create it
-          if (!is_dir(\$extractTo)) {
-              mkdir(\$extractTo, 0755, true);
-          }
-
+          // Ensure extraction directory exists
+          \$extractTo = '/home/ilqnbdpj/bookmark.johnkaburu.co.ke';  
+          
           // Delete existing files in the extraction directory
           deleteDirectory(\$extractTo);
 
@@ -102,6 +99,10 @@ jobs:
               file_put_contents(\$logFile, 'Zip file does not exist: ' . \$zipFile . PHP_EOL, FILE_APPEND);
               echo 'Zip file does not exist. Please ensure the file was uploaded successfully.';
           }
+          
+          // Cleanup uploaded zip after extraction attempt
+          unlink(\$zipFile); // Attempt to delete the zip after extraction
+
           ?>" > extract.php
 
           # Upload the PHP script to the server
@@ -118,19 +119,6 @@ jobs:
           EXECUTE_RESPONSE=$(curl -s "$EXECUTE_URL")
           
           echo "PHP Execution Response: $EXECUTE_RESPONSE"
-
-          # Cleanup the uploaded ZIP file and the PHP script
-          CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
-          
-          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -d "dir=$CPANEL_EXTRACT_DIR" \
-               -d "file=$(basename $DEPLOY_ZIP)" \
-               "$CLEANUP_URL" || { echo "Cleanup of ZIP file failed"; exit 1; }
-
-          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -d "dir=$CPANEL_EXTRACT_DIR" \
-               -d "file=extract.php" \
-               "$CLEANUP_URL" || { echo "Cleanup of PHP script failed"; exit 1; }
 
       - name: Verify deployment
         if: success()
