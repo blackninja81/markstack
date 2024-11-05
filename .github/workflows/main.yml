@@ -1,7 +1,7 @@
 name: Deploy to cPanel via File Upload
 on:
   push:
-    branches: [ master ]  # or your default branch name
+    branches: [ master ]  # Adjust if your branch is named differently
 
 jobs:
   deploy:
@@ -15,18 +15,25 @@ jobs:
       - name: Create deployment package
         run: |
           timestamp=$(date +%s)
-          DEPLOY_ZIP="deploy_${timestamp}.zip"
+          export DEPLOY_ZIP="deploy_${timestamp}.zip"
           echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
           cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
           ls -la "$GITHUB_WORKSPACE"  # Debug: list files in workspace to verify zip creation
 
-      - name: Upload and deploy
+      - name: Debug: Check Environment Variables
         run: |
-          # Debug: Print file existence
-          echo "Checking for zip file: $DEPLOY_ZIP"
+          echo "Deploy zip file set to: $DEPLOY_ZIP"
+          ls -la "$GITHUB_WORKSPACE/$DEPLOY_ZIP"
+        
+      - name: Upload and deploy
+        env:
+          DEPLOY_ZIP: ${{ env.DEPLOY_ZIP }}
+        run: |
+          # Debug: Confirm zip file path
+          echo "Checking for zip file: $DEPLOY_ZIP at $GITHUB_WORKSPACE"
           ls -la "$GITHUB_WORKSPACE/$DEPLOY_ZIP"
           
-          # Upload new files with explicit file path
+          # Upload file to cPanel
           curl -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
                -F "dir=/public_html" \
                -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
@@ -39,14 +46,14 @@ jobs:
             exit 1
           fi
 
-          # Extract with overwrite
+          # Extract file in cPanel
           curl -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
                -d "dir=/public_html" \
                -d "file=$DEPLOY_ZIP" \
                -d "overwrite=1" \
                "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/extract_files"
 
-          # Cleanup deployment zip
+          # Cleanup deployment zip file
           curl -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
                -d "dir=/public_html" \
                -d "file=$DEPLOY_ZIP" \
