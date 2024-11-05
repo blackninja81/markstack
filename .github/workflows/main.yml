@@ -3,7 +3,7 @@ name: Deploy to cPanel
 on:
   push:
     branches:
-      - main  # Adjust as needed
+      - master  # Adjust as needed
 
 jobs:
   upload:
@@ -22,7 +22,7 @@ jobs:
           CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
           CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
           CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
-          CPANEL_EXTRACT_DIR: "/home/ilqnbdpj/bookmark.johnkaburu.co.ke" # Adjust this path
+          CPANEL_EXTRACT_DIR: "/bookmark.johnkaburu.co.ke" # Adjust this path
         run: |
           # Upload the ZIP file using cPanel API
           curl -s -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
