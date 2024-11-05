@@ -36,23 +36,32 @@ jobs:
           fi
 
           # Upload the zip file
+          UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
+          echo "Upload URL: $UPLOAD_URL"
+          
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -F "dir=/public_html" \
                -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
-               "https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files" || { echo "Upload failed"; exit 1; }
+               "$UPLOAD_URL" || { echo "Upload failed"; exit 1; }
 
           # Extract the zip file with overwrite option
+          EXTRACT_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/extract_files"
+          echo "Extract URL: $EXTRACT_URL"
+
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=/public_html" \
                -d "file=$(basename $DEPLOY_ZIP)" \
                -d "overwrite=1" \
-               "https://$CPANEL_DOMAIN:2083/execute/Fileman/extract_files" || { echo "Extraction failed"; exit 1; }
+               "$EXTRACT_URL" || { echo "Extraction failed"; exit 1; }
 
           # Cleanup deployment zip file
+          CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
+          echo "Cleanup URL: $CLEANUP_URL"
+
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=/public_html" \
                -d "file=$(basename $DEPLOY_ZIP)" \
-               "https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file" || { echo "Cleanup failed"; exit 1; }
+               "$CLEANUP_URL" || { echo "Cleanup failed"; exit 1; }
 
       - name: Verify deployment
         if: success()
