@@ -2,7 +2,7 @@ name: Deploy to cPanel via cPanel API
 
 on:
   push:
-    branches: [master]  # Use your main branch name if different
+    branches: [master]
 
 jobs:
   deploy:
@@ -24,78 +24,35 @@ jobs:
           CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
           CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
           CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
-          CPANEL_EXTRACT_DIR: /home/ilqnbdpj/bookmark.johnkaburu.co.ke  # Adjust as needed
+          CPANEL_EXTRACT_DIR: /home/ilqnbdpj/bookmark.johnkaburu.co.ke
         run: |
           UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
           
-          # Upload the zip file
+          # Upload the ZIP file
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -F "dir=$CPANEL_EXTRACT_DIR" \
                -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
                "$UPLOAD_URL"
 
-          # Create the extraction script with a lock file mechanism
+          # Upload the PHP extraction script
+          PHP_UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
           echo "<?php
           error_reporting(E_ALL);
           ini_set('display_errors', 1);
-
-          \$zipFile = '$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)';
-          \$extractTo = '$CPANEL_EXTRACT_DIR';
-          \$logFile = 'debug_log.txt';
-          \$lockFile = '$CPANEL_EXTRACT_DIR/extract.lock';
-
-          file_put_contents(\$logFile, 'Attempting to extract: ' . \$zipFile . PHP_EOL, FILE_APPEND);
-
-          if (file_exists(\$lockFile)) {
-              file_put_contents(\$logFile, 'Extraction already in progress or completed. Skipping.' . PHP_EOL, FILE_APPEND);
-              exit('Extraction already in progress.');
-          }
-
-          file_put_contents(\$lockFile, 'locked');
-
-          function deleteDirectoryContents(\$dir) {
-              if (!is_dir(\$dir)) return;
-              \$files = array_diff(scandir(\$dir), ['.', '..']);
-              foreach (\$files as \$file) {
-                  \$filePath = \"\$dir/\$file\";
-                  is_dir(\$filePath) ? deleteDirectoryContents(\$filePath) : unlink(\$filePath);
-              }
-          }
-
-          deleteDirectoryContents(\$extractTo);
-
-          if (file_exists(\$zipFile)) {
-              \$zip = new ZipArchive;
-              if (\$zip->open(\$zipFile) === TRUE) {
-                  \$zip->extractTo(\$extractTo);
-                  \$zip->close();
-                  file_put_contents(\$logFile, 'Extraction successful.' . PHP_EOL, FILE_APPEND);
-                  echo 'Extraction successful.';
-              } else {
-                  file_put_contents(\$logFile, 'Failed to open ZIP.' . PHP_EOL, FILE_APPEND);
-                  echo 'Failed to open ZIP.';
-              }
-          } else {
-              file_put_contents(\$logFile, 'ZIP file not found: ' . \$zipFile . PHP_EOL, FILE_APPEND);
-              echo 'ZIP not found.';
-          }
-
-          unlink(\$lockFile);
+          // [Your updated extract.php code goes here]
           ?>" > extract.php
-
-          # Upload the PHP script for extraction
-          PHP_UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
+          
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -F "dir=$CPANEL_EXTRACT_DIR" \
                -F "file=@extract.php" \
                "$PHP_UPLOAD_URL"
 
-          # Execute the PHP extraction script
+          # Execute the extraction script
           EXECUTE_URL="https://$CPANEL_DOMAIN/extract.php"
           EXECUTE_RESPONSE=$(curl -s "$EXECUTE_URL")
           echo "PHP Execution Response: $EXECUTE_RESPONSE"
 
-          # Cleanup uploaded files after extraction
+          # Clean up uploaded files after extraction
           CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
           
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
