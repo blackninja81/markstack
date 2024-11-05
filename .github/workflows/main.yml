@@ -107,17 +107,19 @@ jobs:
           echo "PHP Execution Response: $EXECUTE_RESPONSE"
 
           # Cleanup the uploaded ZIP file and the PHP script
-          CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
+          CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/fileop"
           echo "Cleanup URL: $CLEANUP_URL"
 
+          # Deleting the ZIP file
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -d "dir=$CPANEL_EXTRACT_DIR" \
-               -d "file=$(basename $DEPLOY_ZIP)" \
+               -d "op=delete" \
+               -d "sourcefiles=$(basename $DEPLOY_ZIP)" \
                "$CLEANUP_URL" || { echo "Cleanup of ZIP file failed"; exit 1; }
 
+          # Deleting the PHP script
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -d "dir=$CPANEL_EXTRACT_DIR" \
-               -d "file=extract.php" \
+               -d "op=delete" \
+               -d "sourcefiles=extract.php" \
                "$CLEANUP_URL" || { echo "Cleanup of PHP script failed"; exit 1; }
 
       - name: Verify deployment
