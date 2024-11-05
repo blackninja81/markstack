@@ -11,22 +11,32 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Creating zip from dist directory
+      # Creating zip from dist directory with explicit path handling
       - name: Create deployment package
         run: |
-          cd dist
-          zip -r ../deploy_$(date +%s).zip .
-          cd ..
+          timestamp=$(date +%s)
+          echo "DEPLOY_ZIP=deploy_${timestamp}.zip" >> $GITHUB_ENV
+          cd dist && zip -r "../$DEPLOY_ZIP" . && cd ..
+          ls -la  # Debug: list files to verify zip creation
 
       - name: Upload and deploy
         run: |
-          DEPLOY_ZIP="deploy_$(date +%s).zip"
+          # Debug: Print file existence
+          echo "Checking for zip file: $DEPLOY_ZIP"
+          ls -la "$DEPLOY_ZIP"
           
-          # Upload new files
+          # Upload new files with explicit file path
           curl -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
                -F "dir=/public_html" \
                -F "file=@$DEPLOY_ZIP" \
                "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/upload_files"
+          
+          if [ $? -eq 0 ]; then
+            echo "Upload successful"
+          else
+            echo "Upload failed"
+            exit 1
+          fi
 
           # Extract with overwrite
           curl -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
@@ -46,3 +56,10 @@ jobs:
         run: |
           echo "Deployment completed successfully"
           echo "Timestamp: $(date)"
+          
+      - name: Handle failure
+        if: failure()
+        run: |
+          echo "Deployment failed"
+          echo "Contents of current directory:"
+          ls -la
