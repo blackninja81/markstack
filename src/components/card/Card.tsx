@@ -1,5 +1,5 @@
 import "./card.scss";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import loading from "../../../public/assets/images/logo.png";
 
 interface CardProps {
@@ -7,37 +7,57 @@ interface CardProps {
     image: string;
     label: string;
     link: string;
-    desciption: string; // Fixed typo in the property name
+    desciption: string; // Keeping original typo as in your interface
   };
 }
 
 const Card: React.FC<CardProps> = ({ data }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(true);
 
-  // Function to handle image load
+  useEffect(() => {
+    setImageLoaded(false);
+    setIsTransitioning(true);
+    
+    const transitionTimeout = setTimeout(() => {
+      setIsTransitioning(false);
+    }, 100);
+
+    return () => clearTimeout(transitionTimeout);
+  }, [data.image]);
+
   const handleImageLoad = () => {
     setImageLoaded(true);
   };
 
-  // Function to handle image error
   const handleImageError = (
     e: React.SyntheticEvent<HTMLImageElement, Event>
   ) => {
-    e.currentTarget.src = loading; // Replace with loading image if original image fails to load
+    e.currentTarget.src = loading;
+    setImageLoaded(true);
   };
 
   return (
-    <a href={data.link} target="_blank">
+    <a href={data.link} target="_blank" rel="noopener noreferrer">
       <div className="card-body">
         <div className="card-image">
-          {!imageLoaded && <img src={loading} alt="Loading" />}{" "}
-          {/* Display loading image if not loaded */}
+          {(!imageLoaded || isTransitioning) && (
+            <img 
+              src={loading} 
+              alt="Loading" 
+              className="loading-image"
+            />
+          )}
           <img
             src={data.image}
             alt={data.label}
             loading="lazy"
             onLoad={handleImageLoad}
             onError={handleImageError}
+            style={{ 
+              opacity: imageLoaded && !isTransitioning ? 1 : 0,
+              transition: 'opacity 0.3s ease-out'
+            }}
           />
         </div>
         <div className="card-text">
