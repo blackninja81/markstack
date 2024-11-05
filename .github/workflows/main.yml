@@ -15,20 +15,21 @@ jobs:
       - name: Create deployment package
         run: |
           timestamp=$(date +%s)
-          echo "DEPLOY_ZIP=deploy_${timestamp}.zip" >> $GITHUB_ENV
-          cd dist && zip -r "../$DEPLOY_ZIP" . && cd ..
-          ls -la  # Debug: list files to verify zip creation
+          DEPLOY_ZIP="deploy_${timestamp}.zip"
+          echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
+          cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
+          ls -la "$GITHUB_WORKSPACE"  # Debug: list files in workspace to verify zip creation
 
       - name: Upload and deploy
         run: |
           # Debug: Print file existence
           echo "Checking for zip file: $DEPLOY_ZIP"
-          ls -la "$DEPLOY_ZIP"
+          ls -la "$GITHUB_WORKSPACE/$DEPLOY_ZIP"
           
           # Upload new files with explicit file path
           curl -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
                -F "dir=/public_html" \
-               -F "file=@$DEPLOY_ZIP" \
+               -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
                "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/upload_files"
           
           if [ $? -eq 0 ]; then
