@@ -1,4 +1,4 @@
-name: Deploy to cPanel via File Upload with SFTP Extraction
+name: Deploy to cPanel via cPanel API
 on:
   push:
     branches: [master]  # Change to your default branch name if different
@@ -17,10 +17,10 @@ jobs:
           cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
           echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
           ls -la "$GITHUB_WORKSPACE"  # List files in workspace to verify zip creation
-      - name: Upload and extract to cPanel via SFTP
+      - name: Upload and extract to cPanel using API
         env:
           CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
-          CPANEL_PASSWORD: ${{ secrets.CPANEL_PASSWORD }}
+          CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
           CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
           CPANEL_EXTRACT_DIR: /bookmark.johnkaburu.co.ke  # Change this to the desired cPanel directory
         run: |
@@ -33,24 +33,44 @@ jobs:
             exit 1
           fi
           
-          # Upload the zip file using SFTP (cPanel port)
-          echo "Uploading the zip file using SFTP (cPanel port)..."
-          sftp -P 2222 -o StrictHostKeyChecking=no $CPANEL_USERNAME@$CPANEL_DOMAIN <<EOF
-          put $GITHUB_WORKSPACE/$DEPLOY_ZIP $CPANEL_EXTRACT_DIR/$DEPLOY_ZIP
-          EOF
+          # Upload the zip file using cPanel API
+          UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
+          echo "Upload URL: $UPLOAD_URL"
           
-          # Extract the zip file using SFTP (cPanel port)
-          echo "Extracting the zip file using SFTP (cPanel port)..."
-          sftp -P 2222 -o StrictHostKeyChecking=no $CPANEL_USERNAME@$CPANEL_DOMAIN <<EOF
-          cd $CPANEL_EXTRACT_DIR
-          unzip -o $DEPLOY_ZIP
-          EOF
+          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+               -F "dir=$CPANEL_EXTRACT_DIR" \
+               -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
+               "$UPLOAD_URL" || { echo "Upload failed"; exit 1; }
           
-          # Cleanup the deployment zip file
-          echo "Cleaning up the deployment zip file..."
-          sftp -P 2222 -o StrictHostKeyChecking=no $CPANEL_USERNAME@$CPANEL_DOMAIN <<EOF
-          rm $CPANEL_EXTRACT_DIR/$DEPLOY_ZIP
-          EOF
+          # Extract the zip file using cPanel API
+          EXTRACT_URL="https://$CPANEL_DOMAIN:2083/execute/ZipArchive/unzip"
+          echo "Extract URL: $EXTRACT_URL"
+          
+          # Extract the zip file and capture the response
+          RESPONSE=$(curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+               -d "source=$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)" \
+               -d "destination=$CPANEL_EXTRACT_DIR" \
+               -d "overwrite=1" \
+               "$EXTRACT_URL")
+          
+          echo "Extraction Response: $RESPONSE"
+          
+          # Check if extraction was successful
+          if [[ "$RESPONSE" == *"success"* ]]; then
+            echo "Extraction successful."
+          else
+            echo "Extraction failed with response: $RESPONSE"
+            exit 1
+          fi
+          
+          # Cleanup deployment zip file
+          CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
+          echo "Cleanup URL: $CLEANUP_URL"
+          
+          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+               -d "dir=$CPANEL_EXTRACT_DIR" \
+               -d "file=$(basename $DEPLOY_ZIP)" \
+               "$CLEANUP_URL" || { echo "Cleanup failed"; exit 1; }
       - name: Verify deployment
         if: success()
         run: |
