@@ -48,11 +48,12 @@ jobs:
           EXTRACT_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/extract_files"
           echo "Extract URL: $EXTRACT_URL"
 
+          # Verbose curl command for extracting the zip file
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=/bookmark.johnkaburu.co.ke" \
                -d "file=$(basename $DEPLOY_ZIP)" \
                -d "overwrite=1" \
-               "$EXTRACT_URL" || { echo "Extraction failed"; exit 1; }
+               "$EXTRACT_URL" -v || { echo "Extraction failed"; exit 1; }
 
           # Cleanup deployment zip file
           CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
