@@ -52,7 +52,7 @@ jobs:
           echo "<?php
           error_reporting(E_ALL);
           ini_set('display_errors', 1);
-          
+
           \$zipFile = '$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)';
           \$extractTo = '$CPANEL_EXTRACT_DIR';
           \$logFile = 'debug_log.txt';
@@ -73,13 +73,13 @@ jobs:
               file_put_contents(\$logFile, 'Zip file does not exist: ' . \$zipFile . PHP_EOL, FILE_APPEND);
               echo 'Zip file does not exist. Please ensure the file was uploaded successfully.';
           }
-          ?>" > extract.php
+          ?>" > $PHP_SCRIPT
 
           # Upload the PHP script to the server
           PHP_UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -F "dir=$CPANEL_EXTRACT_DIR" \
-               -F "file=@extract.php" \
+               -F "file=@$PHP_SCRIPT" \
                "$PHP_UPLOAD_URL"
 
           # Execute the PHP script to perform extraction
@@ -98,7 +98,7 @@ jobs:
           
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=$CPANEL_EXTRACT_DIR" \
-               -d "file=extract.php" \
+               -d "file=$PHP_SCRIPT" \
                "$CLEANUP_URL" || { echo "Cleanup of PHP script failed"; exit 1; }
 
       - name: Verify deployment
