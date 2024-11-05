@@ -2,7 +2,7 @@ name: Deploy to cPanel via File Upload
 
 on:
   push:
-    branches: [ master ]  # Change to your default branch name if different
+    branches: [master]  # Change to your default branch name if different
 
 jobs:
   deploy:
@@ -19,6 +19,7 @@ jobs:
           DEPLOY_ZIP="deploy_${timestamp}.zip"
           echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
           cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
+          echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
           ls -la "$GITHUB_WORKSPACE"  # List files in workspace to verify zip creation
 
       - name: Upload and deploy to cPanel
@@ -43,6 +44,13 @@ jobs:
                -F "dir=/bookmark.johnkaburu.co.ke" \
                -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
                "$UPLOAD_URL" || { echo "Upload failed"; exit 1; }
+
+          # List files in the directory to verify upload
+          LIST_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/list_files"
+          echo "Listing files in directory after upload:"
+          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+               -d "dir=/bookmark.johnkaburu.co.ke" \
+               "$LIST_URL"
 
           # Extract the zip file with overwrite option
           EXTRACT_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/extract_files"
