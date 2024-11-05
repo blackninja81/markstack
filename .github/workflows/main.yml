@@ -1,0 +1,48 @@
+name: Deploy to cPanel via File Upload
+on:
+  push:
+    branches: [ master ]  # or your default branch name
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Creating zip from dist directory
+      - name: Create deployment package
+        run: |
+          cd dist
+          zip -r ../deploy_$(date +%s).zip .
+          cd ..
+
+      - name: Upload and deploy
+        run: |
+          DEPLOY_ZIP="deploy_$(date +%s).zip"
+          
+          # Upload new files
+          curl -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
+               -F "dir=/public_html" \
+               -F "file=@$DEPLOY_ZIP" \
+               "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/upload_files"
+
+          # Extract with overwrite
+          curl -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
+               -d "dir=/public_html" \
+               -d "file=$DEPLOY_ZIP" \
+               -d "overwrite=1" \
+               "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/extract_files"
+
+          # Cleanup deployment zip
+          curl -H "Authorization: cpanel ${{ secrets.CPANEL_USERNAME }}:${{ secrets.CPANEL_API_TOKEN }}" \
+               -d "dir=/public_html" \
+               -d "file=$DEPLOY_ZIP" \
+               "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/delete_file"
+
+      - name: Verify deployment
+        if: success()
+        run: |
+          echo "Deployment completed successfully"
+          echo "Timestamp: $(date)"
