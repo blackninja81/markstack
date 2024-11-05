@@ -1,58 +1,46 @@
-name: Deploy to cPanel via cPanel API
+name: Deploy to cPanel
+
 on:
   push:
-    branches: [master]
+    branches:
+      - main  # Adjust as needed
 
 jobs:
-  deploy:
+  upload:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
-      - name: Create deployment package
+
+      - name: Prepare ZIP file
         run: |
-          timestamp=$(date +%s)
-          DEPLOY_ZIP="deploy_${timestamp}.zip"
-          echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
-          cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
-          echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
-          ls -la "$GITHUB_WORKSPACE"
+          # Create a ZIP file containing the required files
+          zip -r deploy.zip path/to/your/files  # Adjust this path
 
       - name: Upload ZIP to cPanel
         env:
           CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
           CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
           CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
-          CPANEL_EXTRACT_DIR: /bookmark.johnkaburu.co.ke
+          CPANEL_EXTRACT_DIR: "/home/ilqnbdpj/bookmark.johnkaburu.co.ke" # Adjust this path
         run: |
-          echo "Using CPANEL_DOMAIN: $CPANEL_DOMAIN"
-          echo "Uploading to CPANEL_EXTRACT_DIR: $CPANEL_EXTRACT_DIR"
-
-          if [ ! -f "$GITHUB_WORKSPACE/$DEPLOY_ZIP" ]; then
-            echo "Error: Zip file $DEPLOY_ZIP not found."
-            exit 1
-          fi
-          
-          UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
-          UPLOAD_RESPONSE=$(curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -F "dir=$CPANEL_EXTRACT_DIR" \
-               -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
-               "$UPLOAD_URL")
-
-          echo "Upload Response: $UPLOAD_RESPONSE"
+          # Upload the ZIP file using cPanel API
+          curl -s -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+            -F "file=@deploy.zip" \
+            "https://${CPANEL_DOMAIN}:2083/execute/Fileman/upload_file?dir=${CPANEL_EXTRACT_DIR}"
 
           # Construct full path to ZIP file
-          ZIP_FILE_PATH="$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)"
+          ZIP_FILE_PATH="${CPANEL_EXTRACT_DIR}/deploy.zip"
           echo "Checking for ZIP file at: $ZIP_FILE_PATH"
+
+          # Check if the ZIP file exists after upload
           MAX_TRIES=10
           SLEEP_DURATION=2
 
-          # Check if ZIP file exists on server after upload
           for (( i=0; i<$MAX_TRIES; i++ )); do
             FILE_CHECK=$(curl -s -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
               -d "file=$ZIP_FILE_PATH" \
-              "https://$CPANEL_DOMAIN:2083/execute/Fileman/file_exists")
+              "https://${CPANEL_DOMAIN}:2083/execute/Fileman/file_exists")
 
             if [[ $FILE_CHECK == *'"result":1'* ]]; then
               echo "ZIP file found: $ZIP_FILE_PATH"
@@ -63,68 +51,47 @@ jobs:
             fi
           done
 
-          if [[ $FILE_CHECK != *'"result":1'* ]]; then
-            echo "Error: ZIP file does not exist after upload."
-            exit 1
-          fi
-
-          PHP_SCRIPT="extract.php"
-          echo "Creating PHP script to extract ZIP file"
+          # Create PHP extraction script
           echo "<?php
           error_reporting(E_ALL);
           ini_set('display_errors', 1);
 
-          \$zipFile = '$ZIP_FILE_PATH';
-          \$extractTo = '$CPANEL_EXTRACT_DIR';
-          \$logFile = 'debug_log.txt';
-          file_put_contents(\$logFile, 'Attempting to extract: ' . \$zipFile . PHP_EOL, FILE_APPEND);
+          // Set paths
+          \$zipFile = '$ZIP_FILE_PATH'; // Ensure this matches your upload logic
+          \$extractTo = '/home/ilqnbdpj/bookmark.johnkaburu.co.ke/extracted'; // Set your extraction directory
+          \$logFile = 'debug_log.txt'; // Log file path
 
+          // Log the start of extraction
+          file_put_contents(\$logFile, \"Attempting to extract: \" . \$zipFile . PHP_EOL, FILE_APPEND);
+
+          // Check if the ZIP file exists
           if (file_exists(\$zipFile)) {
               \$zip = new ZipArchive;
               if (\$zip->open(\$zipFile) === TRUE) {
+                  // Create extraction directory if it doesn't exist
+                  if (!is_dir(\$extractTo)) {
+                      mkdir(\$extractTo, 0777, true);
+                  }
+                  // Extract the ZIP file
                   \$zip->extractTo(\$extractTo);
                   \$zip->close();
-                  file_put_contents(\$logFile, 'Extraction successful.' . PHP_EOL, FILE_APPEND);
-                  echo 'Extraction successful.';
+                  file_put_contents(\$logFile, \"Extraction successful to: \" . \$extractTo . PHP_EOL, FILE_APPEND);
+                  echo \"Extraction successful.\";
               } else {
-                  file_put_contents(\$logFile, 'Failed to open the ZIP file.' . PHP_EOL, FILE_APPEND);
-                  echo 'Failed to open the ZIP file.';
+                  file_put_contents(\$logFile, \"Failed to open the ZIP file.\" . PHP_EOL, FILE_APPEND);
+                  echo \"Failed to open the ZIP file.\";
               }
           } else {
-              file_put_contents(\$logFile, 'Zip file does not exist: ' . \$zipFile . PHP_EOL, FILE_APPEND);
-              echo 'Zip file does not exist. Please ensure the file was uploaded successfully.';
+              file_put_contents(\$logFile, \"Zip file does not exist: \" . \$zipFile . PHP_EOL, FILE_APPEND);
+              echo \"Zip file does not exist. Please ensure the file was uploaded successfully.\";
           }
-          ?>" > $PHP_SCRIPT
+          ?>" > extract.php
 
-          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -F "dir=$CPANEL_EXTRACT_DIR" \
-               -F "file=@$PHP_SCRIPT" \
-               "$UPLOAD_URL"
+          # Upload the extraction script
+          curl -s -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+            -F "file=@extract.php" \
+            "https://${CPANEL_DOMAIN}:2083/execute/Fileman/upload_file?dir=${CPANEL_EXTRACT_DIR}"
 
-          EXECUTE_URL="https://$CPANEL_DOMAIN/extract.php"
-          EXECUTE_RESPONSE=$(curl -s "$EXECUTE_URL")
-          echo "PHP Execution Response: $EXECUTE_RESPONSE"
-
-          CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
-          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -d "dir=$CPANEL_EXTRACT_DIR" \
-               -d "file=$(basename $DEPLOY_ZIP)" \
-               "$CLEANUP_URL" || { echo "Cleanup of ZIP file failed"; exit 1; }
-          
-          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -d "dir=$CPANEL_EXTRACT_DIR" \
-               -d "file=$PHP_SCRIPT" \
-               "$CLEANUP_URL" || { echo "Cleanup of PHP script failed"; exit 1; }
-
-      - name: Verify deployment
-        if: success()
-        run: |
-          echo "Deployment completed successfully"
-          echo "Timestamp: $(date)"
-
-      - name: Handle failure
-        if: failure()
-        run: |
-          echo "Deployment failed"
-          echo "Contents of current directory:"
-          ls -la
+          # Run the extraction script
+          curl -s -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+            "https://${CPANEL_DOMAIN}:2083/execute/PhpMyAdmin/execute?file=extract.php"
