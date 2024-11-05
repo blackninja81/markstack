@@ -30,6 +30,7 @@ const TabPagination: React.FC<TabPaginationProps> = ({ totalPages, currentPage, 
         {Array.from({ length: totalPages }, (_, index) => (
           <PaginationItem key={index}>
             <PaginationLink
+            className="pagination-link"
               href="#"
               onClick={(event) => handlePageChange(index + 1, event)}
               isActive={currentPage === index + 1}

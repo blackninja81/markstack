@@ -23,7 +23,9 @@ $breakpoints: (
   medium: #{$tab-count*250px},
   small: #{$tab-count*150px}
 );
-
+.pagination-link {
+  background-color: rgba(0, 0, 0, 0.0);
+}
 
 /* selectors relative to radio inputs */
 $label-selector: "~ ul > li";
