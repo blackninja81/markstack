@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-        
+
       - name: Create deployment package
         run: |
           timestamp=$(date +%s)
@@ -19,7 +19,7 @@ jobs:
           cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
           echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
           ls -la "$GITHUB_WORKSPACE"  # List files in workspace to verify zip creation
-          
+
       - name: Upload ZIP to cPanel
         env:
           CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
@@ -35,11 +35,11 @@ jobs:
             echo "Error: Zip file $DEPLOY_ZIP not found."
             exit 1
           fi
-          
+
           # Upload the zip file using cPanel API
           UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
           echo "Upload URL: $UPLOAD_URL"
-          
+
           UPLOAD_RESPONSE=$(curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -F "dir=$CPANEL_EXTRACT_DIR" \
                -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
@@ -53,13 +53,13 @@ jobs:
           echo "<?php
           error_reporting(E_ALL);
           ini_set('display_errors', 1);
-          
-          \$zipFile = '$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)';
-          \$extractTo = '$CPANEL_EXTRACT_DIR';
+
+          \$zipFile = '/home/ilqnbdpj/bookmark.johnkaburu.co.ke/' . basename('$DEPLOY_ZIP');
+          \$extractTo = '/home/ilqnbdpj/bookmark.johnkaburu.co.ke';  // Full path for extraction
           \$logFile = 'debug_log.txt';
-          
-          // Log current directory contents
-          file_put_contents(\$logFile, 'Current directory contents: ' . print_r(scandir(\$extractTo), true) . PHP_EOL, FILE_APPEND);
+
+          // Log current directory contents and check if the extraction directory exists
+          file_put_contents(\$logFile, 'Current directory contents: ' . print_r(scandir(dirname(\$zipFile)), true) . PHP_EOL, FILE_APPEND);
           file_put_contents(\$logFile, 'Attempting to extract: ' . \$zipFile . PHP_EOL, FILE_APPEND);
 
           if (file_exists(\$zipFile)) {
@@ -86,9 +86,6 @@ jobs:
                -F "file=@extract.php" \
                "$PHP_UPLOAD_URL"
 
-          # Wait for the file to be available
-          sleep 5  # Wait for 5 seconds to ensure the file is available
-
           # Execute the PHP script to perform extraction
           EXECUTE_URL="https://$CPANEL_DOMAIN/extract.php"  # Adjust the URL according to your setup
           EXECUTE_RESPONSE=$(curl -s "$EXECUTE_URL")
@@ -97,12 +94,12 @@ jobs:
           # Cleanup the uploaded ZIP file and the PHP script
           CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
           echo "Cleanup URL: $CLEANUP_URL"
-          
+
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=$CPANEL_EXTRACT_DIR" \
                -d "file=$(basename $DEPLOY_ZIP)" \
                "$CLEANUP_URL" || { echo "Cleanup of ZIP file failed"; exit 1; }
-          
+
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=$CPANEL_EXTRACT_DIR" \
                -d "file=extract.php" \
