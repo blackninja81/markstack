@@ -17,15 +17,29 @@ jobs:
           npm install
           npm run build
 
-      # Ensure zip is installed and create deployment package from build directory
-      - name: Install zip and create deployment package
+      # Ensure zip is installed, verify build directory, and create deployment package
+      - name: Install zip and prepare deployment package
         run: |
           sudo apt-get update && sudo apt-get install -y zip
+          
+          # Verify build directory exists before creating the zip file
+          BUILD_DIR="$GITHUB_WORKSPACE/dist"  # Update this if your build directory is different
+          if [ ! -d "$BUILD_DIR" ]; then
+            echo "Error: Build directory $BUILD_DIR does not exist."
+            exit 1
+          fi
+
+          # Create zip file in workspace
           timestamp=$(date +%s)
-          export DEPLOY_ZIP="$GITHUB_WORKSPACE/deploy_${timestamp}.zip"
+          DEPLOY_ZIP="$GITHUB_WORKSPACE/deploy_${timestamp}.zip"
           echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
-          cd build && zip -r "$DEPLOY_ZIP" . && cd ..
-          ls -la "$GITHUB_WORKSPACE"  # Debug: list files to verify zip creation
+          
+          cd "$BUILD_DIR"
+          zip -r "$DEPLOY_ZIP" . 
+          cd "$GITHUB_WORKSPACE"
+          
+          echo "Zip file created at: $DEPLOY_ZIP"
+          ls -la "$DEPLOY_ZIP"  # Check the existence of the zip file
 
       - name: Upload and deploy to cPanel
         env:
@@ -33,10 +47,14 @@ jobs:
           CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
           CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
         run: |
+          # Check if zip file exists
           echo "Checking for zip file: $DEPLOY_ZIP"
-          ls -la "$DEPLOY_ZIP"
-          
-          # Upload file to cPanel
+          if [ ! -f "$DEPLOY_ZIP" ]; then
+            echo "Error: Zip file $DEPLOY_ZIP not found."
+            exit 1
+          fi
+
+          # Upload the zip file
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -F "dir=/public_html" \
                -F "file=@$DEPLOY_ZIP" \
