@@ -40,7 +40,7 @@ jobs:
           echo "Upload URL: $UPLOAD_URL"
           
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -F "dir=/public_html" \
+               -F "dir=/bookmark.johnkaburu.co.ke" \
                -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
                "$UPLOAD_URL" || { echo "Upload failed"; exit 1; }
 
@@ -49,7 +49,7 @@ jobs:
           echo "Extract URL: $EXTRACT_URL"
 
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -d "dir=/public_html" \
+               -d "dir=/bookmark.johnkaburu.co.ke" \
                -d "file=$(basename $DEPLOY_ZIP)" \
                -d "overwrite=1" \
                "$EXTRACT_URL" || { echo "Extraction failed"; exit 1; }
@@ -59,7 +59,7 @@ jobs:
           echo "Cleanup URL: $CLEANUP_URL"
 
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -d "dir=/public_html" \
+               -d "dir=/bookmark.johnkaburu.co.ke" \
                -d "file=$(basename $DEPLOY_ZIP)" \
                "$CLEANUP_URL" || { echo "Cleanup failed"; exit 1; }
 
