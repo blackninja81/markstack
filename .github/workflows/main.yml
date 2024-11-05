@@ -20,7 +20,7 @@ jobs:
           echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
           ls -la "$GITHUB_WORKSPACE"  # List files in workspace to verify zip creation
           
-      - name: Upload and extract to cPanel using API
+      - name: Upload ZIP to cPanel
         env:
           CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
           CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
@@ -28,7 +28,7 @@ jobs:
           CPANEL_EXTRACT_DIR: /bookmark.johnkaburu.co.ke  # Change this to the desired cPanel directory
         run: |
           echo "Using CPANEL_DOMAIN: $CPANEL_DOMAIN"
-          echo "Uploading and extracting to CPANEL_EXTRACT_DIR: $CPANEL_EXTRACT_DIR"
+          echo "Uploading to CPANEL_EXTRACT_DIR: $CPANEL_EXTRACT_DIR"
 
           # Check if the zip file exists
           if [ ! -f "$GITHUB_WORKSPACE/$DEPLOY_ZIP" ]; then
@@ -47,34 +47,50 @@ jobs:
 
           echo "Upload Response: $UPLOAD_RESPONSE"
 
-          # Extract the zip file using cPanel API
-          EXTRACT_URL="https://$CPANEL_DOMAIN:2083/execute/ZipArchive/unzip"
-          echo "Extract URL: $EXTRACT_URL"
-          
-          # Extract the zip file and capture the response
-          RESPONSE=$(curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -d "source=$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)" \
-               -d "destination=$CPANEL_EXTRACT_DIR" \
-               -d "overwrite=1" \
-               "$EXTRACT_URL")
-          
-          echo "Extraction Response: $RESPONSE"
-          
-          # Check if extraction was successful
-          if [[ "$RESPONSE" == *"success"* ]]; then
-            echo "Extraction successful."
-          else
-            echo "Extraction failed with response: $RESPONSE"
-            exit 1
-          fi
-          
-          # Cleanup deployment zip file
+          # Call a PHP script to extract the ZIP file
+          PHP_SCRIPT="extract.php"
+          echo "Creating PHP script to extract ZIP file"
+          echo "<?php
+          \$zipFile = '$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)';
+          \$extractTo = '$CPANEL_EXTRACT_DIR';
+          if (file_exists(\$zipFile)) {
+              \$zip = new ZipArchive;
+              if (\$zip->open(\$zipFile) === TRUE) {
+                  \$zip->extractTo(\$extractTo);
+                  \$zip->close();
+                  echo 'Extraction successful.';
+              } else {
+                  echo 'Extraction failed.';
+              }
+          } else {
+              echo 'Zip file does not exist.';
+          }
+          ?>" > extract.php
+
+          # Upload the PHP script to the server
+          PHP_UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
+          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+               -F "dir=$CPANEL_EXTRACT_DIR" \
+               -F "file=@extract.php" \
+               "$PHP_UPLOAD_URL"
+
+          # Execute the PHP script to perform extraction
+          EXECUTE_URL="https://$CPANEL_DOMAIN/extract.php"  # Adjust the URL according to your setup
+          EXECUTE_RESPONSE=$(curl -s "$EXECUTE_URL")
+          echo "PHP Execution Response: $EXECUTE_RESPONSE"
+
+          # Cleanup the uploaded ZIP file and the PHP script
           CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
           echo "Cleanup URL: $CLEANUP_URL"
           
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=$CPANEL_EXTRACT_DIR" \
                -d "file=$(basename $DEPLOY_ZIP)" \
+               "$CLEANUP_URL" || { echo "Cleanup failed"; exit 1; }
+          
+          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+               -d "dir=$CPANEL_EXTRACT_DIR" \
+               -d "file=extract.php" \
                "$CLEANUP_URL" || { echo "Cleanup failed"; exit 1; }
 
       - name: Verify deployment
