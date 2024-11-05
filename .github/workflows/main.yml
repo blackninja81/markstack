@@ -52,28 +52,34 @@ jobs:
           echo "<?php
           error_reporting(E_ALL);
           ini_set('display_errors', 1);
-          
+
           \$zipFile = '$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)';
-          \$extractTo = '$CPANEL_EXTRACT_DIR';
-          
+          \$extractTo = '$CPANEL_EXTRACT_DIR/';
+          file_put_contents('debug_log.txt', \"Attempting to extract: \$zipFile\\n\", FILE_APPEND);
+
           if (!class_exists('ZipArchive')) {
-              echo 'ZipArchive class is not available. Please check your PHP installation.';
-              exit;
+              file_put_contents('debug_log.txt', \"ZipArchive class is not available.\\n\", FILE_APPEND);
+              exit('ZipArchive class is not available.');
           }
 
           if (file_exists(\$zipFile)) {
               \$zip = new ZipArchive;
               if (\$zip->open(\$zipFile) === TRUE) {
+                  file_put_contents('debug_log.txt', \"Opened ZIP file successfully.\\n\", FILE_APPEND);
                   if (\$zip->extractTo(\$extractTo)) {
+                      file_put_contents('debug_log.txt', \"Extraction successful.\\n\", FILE_APPEND);
                       echo 'Extraction successful.';
                   } else {
+                      file_put_contents('debug_log.txt', \"Extraction failed.\\n\", FILE_APPEND);
                       echo 'Extraction failed. Check file permissions or the contents of the ZIP file.';
                   }
                   \$zip->close();
               } else {
+                  file_put_contents('debug_log.txt', \"Failed to open the ZIP file.\\n\", FILE_APPEND);
                   echo 'Failed to open the ZIP file. Check if the file is valid.';
               }
           } else {
+              file_put_contents('debug_log.txt', \"Zip file does not exist: \$zipFile\\n\", FILE_APPEND);
               echo 'Zip file does not exist. Please ensure the file was uploaded successfully.';
           }
           ?>" > extract.php
@@ -89,6 +95,12 @@ jobs:
           EXECUTE_URL="https://$CPANEL_DOMAIN/extract.php"  # Adjust the URL according to your setup
           EXECUTE_RESPONSE=$(curl -s "$EXECUTE_URL")
           echo "PHP Execution Response: $EXECUTE_RESPONSE"
+
+          # Check for errors in the response
+          if [[ "$EXECUTE_RESPONSE" == *"failed"* ]]; then
+              echo "Error during extraction: $EXECUTE_RESPONSE"
+              exit 1
+          fi
 
           # Cleanup the uploaded ZIP file and the PHP script
           CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
