@@ -1,7 +1,7 @@
 name: Deploy to cPanel via cPanel API
 on:
   push:
-    branches: [master]
+    branches: [master]  # Change to your default branch name if different
 
 jobs:
   deploy:
@@ -17,23 +17,25 @@ jobs:
           echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
           cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
           echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
-          ls -la "$GITHUB_WORKSPACE"
-
+          ls -la "$GITHUB_WORKSPACE"  # List files in workspace to verify zip creation
+          
       - name: Upload ZIP to cPanel
         env:
           CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
           CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
           CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
-          CPANEL_EXTRACT_DIR: /bookmark.johnkaburu.co.ke
+          CPANEL_EXTRACT_DIR: /bookmark.johnkaburu.co.ke  # Change this to the desired cPanel directory
         run: |
           echo "Using CPANEL_DOMAIN: $CPANEL_DOMAIN"
           echo "Uploading to CPANEL_EXTRACT_DIR: $CPANEL_EXTRACT_DIR"
 
+          # Check if the zip file exists
           if [ ! -f "$GITHUB_WORKSPACE/$DEPLOY_ZIP" ]; then
             echo "Error: Zip file $DEPLOY_ZIP not found."
             exit 1
           fi
           
+          # Upload the zip file using cPanel API
           UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
           echo "Upload URL: $UPLOAD_URL"
           
@@ -44,13 +46,12 @@ jobs:
 
           echo "Upload Response: $UPLOAD_RESPONSE"
 
-          # Create a PHP script to extract the ZIP file using Archive_Zip
+          # Create a PHP script to extract the ZIP file using ZipArchive
           PHP_SCRIPT="extract.php"
-          echo "Creating PHP script to extract ZIP file using Archive_Zip"
+          echo "Creating PHP script to extract ZIP file"
           echo "<?php
           error_reporting(E_ALL);
           ini_set('display_errors', 1);
-          require_once 'Archive/Zip.php'; // Adjust the path if necessary
           
           \$zipFile = '$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)';
           \$extractTo = '$CPANEL_EXTRACT_DIR';
@@ -58,15 +59,15 @@ jobs:
           file_put_contents(\$logFile, 'Attempting to extract: ' . \$zipFile . PHP_EOL, FILE_APPEND);
 
           if (file_exists(\$zipFile)) {
-              \$archive = new Archive_Zip(\$zipFile);
-              \$result = \$archive->extract(\$extractTo);
-              
-              if (\$result) {
+              \$zip = new ZipArchive;
+              if (\$zip->open(\$zipFile) === TRUE) {
+                  \$zip->extractTo(\$extractTo);
+                  \$zip->close();
                   file_put_contents(\$logFile, 'Extraction successful.' . PHP_EOL, FILE_APPEND);
                   echo 'Extraction successful.';
               } else {
-                  file_put_contents(\$logFile, 'Extraction failed. Check file permissions or the contents of the ZIP file.' . PHP_EOL, FILE_APPEND);
-                  echo 'Extraction failed. Check file permissions or the contents of the ZIP file.';
+                  file_put_contents(\$logFile, 'Failed to open the ZIP file.' . PHP_EOL, FILE_APPEND);
+                  echo 'Failed to open the ZIP file.';
               }
           } else {
               file_put_contents(\$logFile, 'Zip file does not exist: ' . \$zipFile . PHP_EOL, FILE_APPEND);
@@ -82,7 +83,7 @@ jobs:
                "$PHP_UPLOAD_URL"
 
           # Execute the PHP script to perform extraction
-          EXECUTE_URL="https://$CPANEL_DOMAIN/extract.php"
+          EXECUTE_URL="https://$CPANEL_DOMAIN/extract.php"  # Adjust the URL according to your setup
           EXECUTE_RESPONSE=$(curl -s "$EXECUTE_URL")
           echo "PHP Execution Response: $EXECUTE_RESPONSE"
 
