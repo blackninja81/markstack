@@ -21,7 +21,7 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y zip
           
-          BUILD_DIR="$GITHUB_WORKSPACE/dist"  
+          BUILD_DIR="$GITHUB_WORKSPACE/dist"
           if [ ! -d "$BUILD_DIR" ]; then
             echo "Error: Build directory $BUILD_DIR does not exist."
             exit 1
@@ -41,10 +41,8 @@ jobs:
           CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
           CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
         run: |
-          # Debugging CPANEL_DOMAIN
           echo "Using CPANEL_DOMAIN: $CPANEL_DOMAIN"
 
-          # Check if zip file exists
           if [ ! -f "$DEPLOY_ZIP" ]; then
             echo "Error: Zip file $DEPLOY_ZIP not found."
             exit 1
@@ -54,7 +52,7 @@ jobs:
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -F "dir=/public_html" \
                -F "file=@$DEPLOY_ZIP" \
-               "https://${CPANEL_DOMAIN}:2083/execute/Fileman/upload_files"
+               "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/upload_files"
 
           if [ $? -eq 0 ]; then
             echo "Upload successful"
@@ -68,13 +66,13 @@ jobs:
                -d "dir=/public_html" \
                -d "file=$(basename $DEPLOY_ZIP)" \
                -d "overwrite=1" \
-               "https://${CPANEL_DOMAIN}:2083/execute/Fileman/extract_files"
+               "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/extract_files"
 
           # Cleanup deployment zip
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=/public_html" \
                -d "file=$(basename $DEPLOY_ZIP)" \
-               "https://${CPANEL_DOMAIN}:2083/execute/Fileman/delete_file"
+               "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/delete_file"
 
       - name: Verify deployment
         if: success()
