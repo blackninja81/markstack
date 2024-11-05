@@ -42,11 +42,13 @@ jobs:
 
           echo "Upload Response: $UPLOAD_RESPONSE"
 
-          # Check if ZIP file exists on server after upload
+          # Construct full path to ZIP file
           ZIP_FILE_PATH="$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)"
+          echo "Checking for ZIP file at: $ZIP_FILE_PATH"
           MAX_TRIES=10
           SLEEP_DURATION=2
 
+          # Check if ZIP file exists on server after upload
           for (( i=0; i<$MAX_TRIES; i++ )); do
             FILE_CHECK=$(curl -s -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
               -d "file=$ZIP_FILE_PATH" \
