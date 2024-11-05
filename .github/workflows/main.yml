@@ -50,6 +50,9 @@ jobs:
           PHP_SCRIPT="extract.php"
           echo "Creating PHP script to extract ZIP file"
           echo "<?php
+          error_reporting(E_ALL);
+          ini_set('display_errors', 1);
+          
           \$zipFile = '$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)';
           \$extractTo = '$CPANEL_EXTRACT_DIR';
           if (file_exists(\$zipFile)) {
