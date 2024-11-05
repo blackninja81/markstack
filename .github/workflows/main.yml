@@ -33,22 +33,22 @@ jobs:
             exit 1
           fi
           
-          # Upload the zip file using SFTP
-          echo "Uploading the zip file using SFTP..."
-          sftp -o StrictHostKeyChecking=no $CPANEL_USERNAME@$CPANEL_DOMAIN <<EOF
+          # Upload the zip file using SFTP (cPanel port)
+          echo "Uploading the zip file using SFTP (cPanel port)..."
+          sftp -P 2222 -o StrictHostKeyChecking=no $CPANEL_USERNAME@$CPANEL_DOMAIN <<EOF
           put $GITHUB_WORKSPACE/$DEPLOY_ZIP $CPANEL_EXTRACT_DIR/$DEPLOY_ZIP
           EOF
           
-          # Extract the zip file using SFTP
-          echo "Extracting the zip file using SFTP..."
-          sftp -o StrictHostKeyChecking=no $CPANEL_USERNAME@$CPANEL_DOMAIN <<EOF
+          # Extract the zip file using SFTP (cPanel port)
+          echo "Extracting the zip file using SFTP (cPanel port)..."
+          sftp -P 2222 -o StrictHostKeyChecking=no $CPANEL_USERNAME@$CPANEL_DOMAIN <<EOF
           cd $CPANEL_EXTRACT_DIR
           unzip -o $DEPLOY_ZIP
           EOF
           
           # Cleanup the deployment zip file
           echo "Cleaning up the deployment zip file..."
-          sftp -o StrictHostKeyChecking=no $CPANEL_USERNAME@$CPANEL_DOMAIN <<EOF
+          sftp -P 2222 -o StrictHostKeyChecking=no $CPANEL_USERNAME@$CPANEL_DOMAIN <<EOF
           rm $CPANEL_EXTRACT_DIR/$DEPLOY_ZIP
           EOF
       - name: Verify deployment
