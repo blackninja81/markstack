@@ -75,7 +75,7 @@ jobs:
           \$logFile = 'debug_log.txt';
           
           // Log current directory contents and check if the extraction directory exists
-          file_put_contents(\$logFile, 'Current directory contents: ' . print_r(scandir(dirname(\$zipFile)), true) . PHP_EOL, FILE_APPEND);
+          file_put_contents(\$logFile, 'Current directory contents before extraction: ' . print_r(scandir(dirname(\$zipFile)), true) . PHP_EOL, FILE_APPEND);
           
           if (file_exists(\$zipFile)) {
               \$zip = new ZipArchive;
@@ -96,6 +96,7 @@ jobs:
 
           # Upload the PHP script to the server
           PHP_UPLOAD_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
+          
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -F "dir=$CPANEL_EXTRACT_DIR" \
                -F "file=@extract.php" \
@@ -103,7 +104,9 @@ jobs:
 
           # Execute the PHP script to perform extraction
           EXECUTE_URL="https://$CPANEL_DOMAIN/extract.php"  # Adjust the URL according to your setup
+          
           EXECUTE_RESPONSE=$(curl -s "$EXECUTE_URL")
+          
           echo "PHP Execution Response: $EXECUTE_RESPONSE"
 
           # Cleanup the uploaded ZIP file and the PHP script
