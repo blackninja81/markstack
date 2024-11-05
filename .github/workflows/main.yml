@@ -17,14 +17,15 @@ jobs:
           npm install
           npm run build
 
-      # Creating zip from the build directory
-      - name: Create deployment package
+      # Ensure zip is installed and create deployment package from build directory
+      - name: Install zip and create deployment package
         run: |
+          sudo apt-get update && sudo apt-get install -y zip
           timestamp=$(date +%s)
-          DEPLOY_ZIP="deploy_${timestamp}.zip"
+          export DEPLOY_ZIP="$GITHUB_WORKSPACE/deploy_${timestamp}.zip"
           echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
-          cd build && zip -r "../$DEPLOY_ZIP" . && cd ..
-          ls -la  # Debug: list files to verify zip creation
+          cd build && zip -r "$DEPLOY_ZIP" . && cd ..
+          ls -la "$GITHUB_WORKSPACE"  # Debug: list files to verify zip creation
 
       - name: Upload and deploy to cPanel
         env:
@@ -32,7 +33,6 @@ jobs:
           CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
           CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
         run: |
-          # Check if the zip file exists
           echo "Checking for zip file: $DEPLOY_ZIP"
           ls -la "$DEPLOY_ZIP"
           
@@ -52,14 +52,14 @@ jobs:
           # Extract with overwrite
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=/public_html" \
-               -d "file=$DEPLOY_ZIP" \
+               -d "file=$(basename $DEPLOY_ZIP)" \
                -d "overwrite=1" \
                "https://${CPANEL_DOMAIN}:2083/execute/Fileman/extract_files"
 
           # Cleanup deployment zip
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=/public_html" \
-               -d "file=$DEPLOY_ZIP" \
+               -d "file=$(basename $DEPLOY_ZIP)" \
                "https://${CPANEL_DOMAIN}:2083/execute/Fileman/delete_file"
 
       - name: Verify deployment
