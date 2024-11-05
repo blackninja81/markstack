@@ -1,4 +1,4 @@
-name: Deploy to cPanel via File Upload with Manual Extract
+name: Deploy to cPanel via File Upload with Extraction
 on:
   push:
     branches: [master]  # Change to your default branch name if different
@@ -17,7 +17,7 @@ jobs:
           cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
           echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
           ls -la "$GITHUB_WORKSPACE"  # List files in workspace to verify zip creation
-      - name: Upload to cPanel
+      - name: Upload and extract to cPanel
         env:
           CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
           CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
@@ -25,7 +25,7 @@ jobs:
           CPANEL_EXTRACT_DIR: /bookmark.johnkaburu.co.ke  # Change this to the desired cPanel directory
         run: |
           echo "Using CPANEL_DOMAIN: $CPANEL_DOMAIN"
-          echo "Uploading to CPANEL_EXTRACT_DIR: $CPANEL_EXTRACT_DIR"
+          echo "Uploading and extracting to CPANEL_EXTRACT_DIR: $CPANEL_EXTRACT_DIR"
           
           # Check if the zip file exists
           if [ ! -f "$GITHUB_WORKSPACE/$DEPLOY_ZIP" ]; then
@@ -41,28 +41,36 @@ jobs:
                -F "dir=$CPANEL_EXTRACT_DIR" \
                -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
                "$UPLOAD_URL" || { echo "Upload failed"; exit 1; }
-      - name: Extract on cPanel
-        env:
-          CPANEL_USERNAME: ${{ secrets.CPANEL_USERNAME }}
-          CPANEL_API_TOKEN: ${{ secrets.CPANEL_API_TOKEN }}
-          CPANEL_DOMAIN: ${{ secrets.CPANEL_DOMAIN }}
-          CPANEL_EXTRACT_DIR: /bookmark.johnkaburu.co.ke  # Change this to the desired cPanel directory
-        run: |
-          echo "Extracting ZIP file in CPANEL_EXTRACT_DIR: $CPANEL_EXTRACT_DIR"
           
-          # List files in the directory to verify upload
-          LIST_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/list_files"
-          echo "Listing files in directory after upload:"
+          # Extract the zip file with overwrite option
+          EXTRACT_URL="https://$CPANEL_DOMAIN:2083/execute/ZipArchive/unzip"
+          echo "Extract URL: $EXTRACT_URL"
+          
+          # Extract the zip file and capture the response
+          RESPONSE=$(curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
+               -d "source=$CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP)" \
+               -d "destination=$CPANEL_EXTRACT_DIR" \
+               -d "overwrite=1" \
+               "$EXTRACT_URL")
+          
+          echo "Extraction Response: $RESPONSE"
+          
+          # Check if extraction was successful
+          if [[ "$RESPONSE" == *"success"* ]]; then
+            echo "Extraction successful."
+          else
+            echo "Extraction failed with response: $RESPONSE"
+            exit 1
+          fi
+          
+          # Cleanup deployment zip file
+          CLEANUP_URL="https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
+          echo "Cleanup URL: $CLEANUP_URL"
+          
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=$CPANEL_EXTRACT_DIR" \
-               "$LIST_URL"
-          
-          # Extract the zip file manually
-          echo "Extracting the zip file manually..."
-          EXTRACT_COMMAND="unzip -o $CPANEL_EXTRACT_DIR/$(basename $DEPLOY_ZIP) -d $CPANEL_EXTRACT_DIR"
-          curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
-               -d "cmd=$EXTRACT_COMMAND" \
-               "https://$CPANEL_DOMAIN:2083/execute/ShellExec/exec_for_pkg"
+               -d "file=$(basename $DEPLOY_ZIP)" \
+               "$CLEANUP_URL" || { echo "Cleanup failed"; exit 1; }
       - name: Verify deployment
         if: success()
         run: |
