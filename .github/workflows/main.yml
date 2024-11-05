@@ -2,7 +2,7 @@ name: Deploy to cPanel via File Upload
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master ]  # Change to your default branch name if different
 
 jobs:
   deploy:
@@ -12,28 +12,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install dependencies and build project
+      # Create a zip from the dist directory with explicit path handling
+      - name: Create deployment package
         run: |
-          npm install
-          npm run build
-
-      - name: Install zip and create deployment package
-        run: |
-          sudo apt-get update && sudo apt-get install -y zip
-          
-          BUILD_DIR="$GITHUB_WORKSPACE/dist"
-          if [ ! -d "$BUILD_DIR" ]; then
-            echo "Error: Build directory $BUILD_DIR does not exist."
-            exit 1
-          fi
-
           timestamp=$(date +%s)
-          DEPLOY_ZIP="$GITHUB_WORKSPACE/deploy_${timestamp}.zip"
+          DEPLOY_ZIP="deploy_${timestamp}.zip"
           echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
-          
-          cd "$BUILD_DIR" && zip -r "$DEPLOY_ZIP" . && cd "$GITHUB_WORKSPACE"
-          echo "Zip file created at: $DEPLOY_ZIP"
-          ls -la "$DEPLOY_ZIP"  # Confirm zip creation
+          cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
+          ls -la "$GITHUB_WORKSPACE"  # List files in workspace to verify zip creation
 
       - name: Upload and deploy to cPanel
         env:
@@ -43,7 +29,8 @@ jobs:
         run: |
           echo "Using CPANEL_DOMAIN: $CPANEL_DOMAIN"
 
-          if [ ! -f "$DEPLOY_ZIP" ]; then
+          # Check if the zip file exists
+          if [ ! -f "$GITHUB_WORKSPACE/$DEPLOY_ZIP" ]; then
             echo "Error: Zip file $DEPLOY_ZIP not found."
             exit 1
           fi
@@ -51,8 +38,8 @@ jobs:
           # Upload the zip file
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -F "dir=/public_html" \
-               -F "file=@$DEPLOY_ZIP" \
-               "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/upload_files"
+               -F "file=@$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
+               "https://$CPANEL_DOMAIN:2083/execute/Fileman/upload_files"
 
           if [ $? -eq 0 ]; then
             echo "Upload successful"
@@ -61,18 +48,18 @@ jobs:
             exit 1
           fi
 
-          # Extract with overwrite
+          # Extract the zip file with overwrite option
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=/public_html" \
                -d "file=$(basename $DEPLOY_ZIP)" \
                -d "overwrite=1" \
-               "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/extract_files"
+               "https://$CPANEL_DOMAIN:2083/execute/Fileman/extract_files"
 
-          # Cleanup deployment zip
+          # Cleanup deployment zip file
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=/public_html" \
                -d "file=$(basename $DEPLOY_ZIP)" \
-               "https://${{ secrets.CPANEL_DOMAIN }}:2083/execute/Fileman/delete_file"
+               "https://$CPANEL_DOMAIN:2083/execute/Fileman/delete_file"
 
       - name: Verify deployment
         if: success()
