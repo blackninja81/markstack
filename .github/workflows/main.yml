@@ -10,7 +10,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
         
-      # Create a zip from the dist directory with explicit path handling
       - name: Create deployment package
         run: |
           timestamp=$(date +%s)
@@ -47,7 +46,7 @@ jobs:
 
           echo "Upload Response: $UPLOAD_RESPONSE"
 
-          # Call a PHP script to extract the ZIP file
+          # Create a PHP script to extract the ZIP file
           PHP_SCRIPT="extract.php"
           echo "Creating PHP script to extract ZIP file"
           echo "<?php
@@ -56,11 +55,14 @@ jobs:
           if (file_exists(\$zipFile)) {
               \$zip = new ZipArchive;
               if (\$zip->open(\$zipFile) === TRUE) {
-                  \$zip->extractTo(\$extractTo);
+                  if (\$zip->extractTo(\$extractTo)) {
+                      echo 'Extraction successful.';
+                  } else {
+                      echo 'Extraction failed.';
+                  }
                   \$zip->close();
-                  echo 'Extraction successful.';
               } else {
-                  echo 'Extraction failed.';
+                  echo 'Failed to open the ZIP file.';
               }
           } else {
               echo 'Zip file does not exist.';
@@ -86,12 +88,12 @@ jobs:
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=$CPANEL_EXTRACT_DIR" \
                -d "file=$(basename $DEPLOY_ZIP)" \
-               "$CLEANUP_URL" || { echo "Cleanup failed"; exit 1; }
+               "$CLEANUP_URL" || { echo "Cleanup of ZIP file failed"; exit 1; }
           
           curl -H "Authorization: cpanel ${CPANEL_USERNAME}:${CPANEL_API_TOKEN}" \
                -d "dir=$CPANEL_EXTRACT_DIR" \
                -d "file=extract.php" \
-               "$CLEANUP_URL" || { echo "Cleanup failed"; exit 1; }
+               "$CLEANUP_URL" || { echo "Cleanup of PHP script failed"; exit 1; }
 
       - name: Verify deployment
         if: success()
