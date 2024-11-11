@@ -25,7 +25,7 @@ jobs:
           FTP_SERVER: ${{ secrets.FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_TARGET_DIR: /public_html/bookmark.johnkaburu.co.ke  # Adjust to your FTP target directory
+          FTP_TARGET_DIR: /bookmark.johnkaburu.co.ke  # Adjust to your FTP target directory
         run: |
           echo "Uploading to FTP server $FTP_SERVER"
 
