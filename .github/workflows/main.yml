@@ -30,7 +30,7 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /bookmark.johnkaburu.co.ke/  # Ensure this ends with a /
+        server-dir: /  # Set this to root or the desired parent directory
         local-dir: dist/  # This is where your build output is located
         exclude: |
           .git*
