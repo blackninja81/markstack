@@ -18,26 +18,23 @@ jobs:
           echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
           cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
           echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
-          ls -la "$GITHUB_WORKSPACE"  # List files in workspace to verify zip creation
+          ls -la "$GITHUB_WORKSPACE"  # Verify the zip file creation
 
       - name: Upload ZIP via FTP
         env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_TARGET_DIR: /bookmark.johnkaburu.co.ke  # Adjust to your FTP target directory
+          FTP_SERVER: ftp.johnkaburu.co.ke
+          FTP_USERNAME: "johnkaburu@johnkaburu.co.ke"
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}  # Ensure FTP password is stored in GitHub Secrets
+          FTP_TARGET_DIR: /bookmark.johnkaburu.co.ke  # Adjust this to the target directory on your server
         run: |
           echo "Uploading to FTP server $FTP_SERVER"
-
-          # Upload zip file to FTP server
           curl -T "$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
                --ftp-create-dirs \
                --user "${FTP_USERNAME}:${FTP_PASSWORD}" \
                "ftp://$FTP_SERVER$FTP_TARGET_DIR/$(basename $DEPLOY_ZIP)"
-      
+
       - name: Upload extraction PHP script via FTP
         run: |
-          # Create PHP script for extraction
           PHP_SCRIPT="extract.php"
           cat > $PHP_SCRIPT << 'EOF'
           <?php
@@ -55,7 +52,7 @@ jobs:
           }
 
           $zipFile = __DIR__ . '/' . basename('$DEPLOY_ZIP');
-          $extractTo = __DIR__; // Adjust if extraction is needed in a specific directory
+          $extractTo = __DIR__;
 
           deleteDirectory($extractTo); // Clean up old files
 
@@ -75,16 +72,14 @@ jobs:
           ?>
           EOF
 
-          # Upload PHP script to FTP server
           curl -T "$PHP_SCRIPT" \
                --user "${FTP_USERNAME}:${FTP_PASSWORD}" \
                "ftp://$FTP_SERVER$FTP_TARGET_DIR/$(basename $PHP_SCRIPT)"
-        
+
       - name: Run extraction script
         env:
-          FTP_DOMAIN: ${{ secrets.FTP_DOMAIN }}  # Use the domain where the extract.php script will be accessible
+          FTP_DOMAIN: "bookmark.johnkaburu.co.ke"  # Update to the correct domain or subdomain
         run: |
-          # Execute the PHP script to perform extraction
           EXECUTE_URL="https://$FTP_DOMAIN/extract.php"
           echo "Executing extraction script at $EXECUTE_URL"
           curl -s "$EXECUTE_URL"
