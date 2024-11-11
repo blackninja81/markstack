@@ -30,7 +30,7 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /bookmark.johnkaburu.co.ke  # Adjust this path as needed
+        server-dir: /bookmark.johnkaburu.co.ke/  # Ensure this ends with a /
         local-dir: dist/  # This is where your build output is located
         exclude: |
           .git*
