@@ -1,9 +1,7 @@
 name: Deploy to cPanel via FTP
-
 on:
   push:
     branches: [master]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -18,30 +16,15 @@ jobs:
           echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
           cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
           echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
-          ls -la "$GITHUB_WORKSPACE"  # Verify zip file creation
+          ls -la "$GITHUB_WORKSPACE"
 
-      - name: Upload ZIP via FTP
-        env:
-          FTP_SERVER: ftp.johnkaburu.co.ke
-          FTP_USERNAME: "johnkaburu@johnkaburu.co.ke"
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_TARGET_DIR: /bookmark.johnkaburu.co.ke  # Adjust to your FTP target directory
+      - name: Create PHP extraction script
         run: |
-          echo "Uploading to FTP server $FTP_SERVER"
-          curl -T "$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
-               --ftp-create-dirs \
-               --user "${FTP_USERNAME}:${FTP_PASSWORD}" \
-               "ftp://$FTP_SERVER$FTP_TARGET_DIR/$(basename $DEPLOY_ZIP)"
-
-      - name: Upload extraction PHP script via FTP
-        run: |
-          # Create PHP script for extraction
-          PHP_SCRIPT="extract.php"
-          cat > $PHP_SCRIPT << 'EOF'
+          cat > extract.php << 'EOL'
           <?php
           error_reporting(E_ALL);
           ini_set('display_errors', 1);
-
+          
           function deleteDirectory($dir) {
               if (!is_dir($dir)) return;
               $files = array_diff(scandir($dir), array('.', '..'));
@@ -51,41 +34,53 @@ jobs:
               }
               rmdir($dir);
           }
-
-          $zipFile = __DIR__ . '/' . basename('$DEPLOY_ZIP');
-          $extractTo = __DIR__; // Adjust if extraction is needed in a specific directory
-
-          deleteDirectory($extractTo); // Clean up old files
-
+          
+          $zipFile = __DIR__ . '/' . getenv('DEPLOY_ZIP');
+          $extractTo = __DIR__; // Extract in current directory
+          
           if (file_exists($zipFile)) {
               $zip = new ZipArchive;
               if ($zip->open($zipFile) === TRUE) {
                   $zip->extractTo($extractTo);
                   $zip->close();
-                  echo 'Extraction successful.';
+                  echo "Extraction successful for file: $zipFile\n";
+                  unlink($zipFile); // Delete zip after extraction
+                  echo "Zip file deleted.\n";
               } else {
-                  echo 'Failed to open the ZIP file.';
+                  echo "Failed to open zip file: $zipFile\n";
               }
           } else {
-              echo 'Zip file does not exist.';
+              echo "Zip file not found: $zipFile\n";
           }
-          unlink($zipFile);
           ?>
-          EOF
+          EOL
 
-          # Upload PHP script to FTP server
-          curl -T "$PHP_SCRIPT" \
-               --user "${FTP_USERNAME}:${FTP_PASSWORD}" \
-               "ftp://$FTP_SERVER$FTP_TARGET_DIR/$(basename $PHP_SCRIPT)"
-        
-      - name: Run extraction script
+      - name: Upload ZIP and PHP script via FTP
         env:
-          FTP_DOMAIN: ${{ secrets.FTP_DOMAIN }}  # Use the domain where the extract.php script will be accessible
+          FTP_SERVER: ${{ secrets.FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
+          FTP_TARGET_DIR: /bookmark.johnkaburu.co.ke
         run: |
-          # Wait for the upload to complete and then execute the PHP script
-          EXECUTE_URL="https://$FTP_DOMAIN/bookmark.johnkaburu.co.ke/extract.php"
+          # Upload ZIP file
+          curl -v -T "$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
+               --ftp-create-dirs \
+               --user "$FTP_USERNAME:$FTP_PASSWORD" \
+               "ftp://$FTP_SERVER$FTP_TARGET_DIR/$DEPLOY_ZIP"
+          
+          # Upload PHP script
+          curl -v -T "extract.php" \
+               --user "$FTP_USERNAME:$FTP_PASSWORD" \
+               "ftp://$FTP_SERVER$FTP_TARGET_DIR/extract.php"
+
+      - name: Execute extraction script
+        env:
+          SITE_DOMAIN: ${{ secrets.SITE_DOMAIN }}
+        run: |
+          sleep 5  # Wait a bit for FTP operations to complete
+          EXECUTE_URL="https://${SITE_DOMAIN}/bookmark.johnkaburu.co.ke/extract.php"
           echo "Executing extraction script at $EXECUTE_URL"
-          curl -s "$EXECUTE_URL"
+          curl -v "$EXECUTE_URL"
 
       - name: Verify deployment
         if: success()
@@ -97,3 +92,4 @@ jobs:
         if: failure()
         run: |
           echo "Deployment failed"
+          echo "Please check the logs above for more details"
