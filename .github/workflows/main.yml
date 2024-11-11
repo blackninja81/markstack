@@ -18,14 +18,14 @@ jobs:
           echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
           cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
           echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
-          ls -la "$GITHUB_WORKSPACE"  # Verify the zip file creation
+          ls -la "$GITHUB_WORKSPACE"  # Verify zip file creation
 
       - name: Upload ZIP via FTP
         env:
           FTP_SERVER: ftp.johnkaburu.co.ke
           FTP_USERNAME: "johnkaburu@johnkaburu.co.ke"
           FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}  # Ensure FTP password is stored in GitHub Secrets
-          FTP_TARGET_DIR: /bookmark.johnkaburu.co.ke  # Adjust this to the target directory on your server
+          FTP_TARGET_DIR: /bookmark.johnkaburu.co.ke  # Adjust to your FTP target directory
         run: |
           echo "Uploading to FTP server $FTP_SERVER"
           curl -T "$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
@@ -80,7 +80,7 @@ jobs:
         env:
           FTP_DOMAIN: "bookmark.johnkaburu.co.ke"  # Update to the correct domain or subdomain
         run: |
-          EXECUTE_URL="https://$FTP_DOMAIN/extract.php"
+          EXECUTE_URL="https://$FTP_DOMAIN/extract.php"  # Ensure that this URL points to the correct location of extract.php
           echo "Executing extraction script at $EXECUTE_URL"
           curl -s "$EXECUTE_URL"
 
