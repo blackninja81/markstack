@@ -1,95 +1,37 @@
-name: Deploy to cPanel via FTP
+name: Deploy to cPanel
+
 on:
   push:
-    branches: [master]
+    branches:
+      - main  # Change this to your default branch if it's different
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout Code
+      uses: actions/checkout@v3
 
-      - name: Create deployment package
-        run: |
-          timestamp=$(date +%s)
-          DEPLOY_ZIP="deploy_${timestamp}.zip"
-          echo "DEPLOY_ZIP=$DEPLOY_ZIP" >> $GITHUB_ENV
-          cd dist && zip -r "$GITHUB_WORKSPACE/$DEPLOY_ZIP" . && cd ..
-          echo "Created zip file: $GITHUB_WORKSPACE/$DEPLOY_ZIP"
-          ls -la "$GITHUB_WORKSPACE"
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '16'  # Specify the Node.js version you need
 
-      - name: Create PHP extraction script
-        run: |
-          cat > extract.php << 'EOL'
-          <?php
-          error_reporting(E_ALL);
-          ini_set('display_errors', 1);
-          
-          function deleteDirectory($dir) {
-              if (!is_dir($dir)) return;
-              $files = array_diff(scandir($dir), array('.', '..'));
-              foreach ($files as $file) {
-                  $filePath = "$dir/$file";
-                  is_dir($filePath) ? deleteDirectory($filePath) : unlink($filePath);
-              }
-              rmdir($dir);
-          }
-          
-          $zipFile = __DIR__ . '/' . getenv('DEPLOY_ZIP');
-          $extractTo = __DIR__; // Extract in current directory
-          
-          if (file_exists($zipFile)) {
-              $zip = new ZipArchive;
-              if ($zip->open($zipFile) === TRUE) {
-                  $zip->extractTo($extractTo);
-                  $zip->close();
-                  echo "Extraction successful for file: $zipFile\n";
-                  unlink($zipFile); // Delete zip after extraction
-                  echo "Zip file deleted.\n";
-              } else {
-                  echo "Failed to open zip file: $zipFile\n";
-              }
-          } else {
-              echo "Zip file not found: $zipFile\n";
-          }
-          ?>
-          EOL
+    - name: Install Dependencies
+      run: npm install
 
-      - name: Upload ZIP and PHP script via FTP
-        env:
-          FTP_SERVER: ${{ secrets.FTP_SERVER }}
-          FTP_USERNAME: ${{ secrets.FTP_USERNAME }}
-          FTP_PASSWORD: ${{ secrets.FTP_PASSWORD }}
-          FTP_TARGET_DIR: /bookmark.johnkaburu.co.ke
-        run: |
-          # Upload ZIP file
-          curl -v -T "$GITHUB_WORKSPACE/$DEPLOY_ZIP" \
-               --ftp-create-dirs \
-               --user "$FTP_USERNAME:$FTP_PASSWORD" \
-               "ftp://$FTP_SERVER$FTP_TARGET_DIR/$DEPLOY_ZIP"
-          
-          # Upload PHP script
-          curl -v -T "extract.php" \
-               --user "$FTP_USERNAME:$FTP_PASSWORD" \
-               "ftp://$FTP_SERVER$FTP_TARGET_DIR/extract.php"
+    - name: Build Project
+      run: npm run build
 
-      - name: Execute extraction script
-        env:
-          SITE_DOMAIN: ${{ secrets.SITE_DOMAIN }}
-        run: |
-          sleep 5  # Wait a bit for FTP operations to complete
-          EXECUTE_URL="https://${SITE_DOMAIN}/bookmark.johnkaburu.co.ke/extract.php"
-          echo "Executing extraction script at $EXECUTE_URL"
-          curl -v "$EXECUTE_URL"
-
-      - name: Verify deployment
-        if: success()
-        run: |
-          echo "Deployment completed successfully"
-          echo "Timestamp: $(date)"
-
-      - name: Handle failure
-        if: failure()
-        run: |
-          echo "Deployment failed"
-          echo "Please check the logs above for more details"
+    - name: Deploy to cPanel
+      uses: SamKirkland/FTP-Deploy-Action@4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        server-dir: /bookmark.johnkaburu.co.ke  # Adjust this path as needed
+        local-dir: dist/  # This is where your build output is located
+        exclude: |
+          .git*
+          node_modules/
