@@ -30,7 +30,7 @@ jobs:
         server: ${{ secrets.FTP_SERVER }}
         username: ${{ secrets.FTP_USERNAME }}
         password: ${{ secrets.FTP_PASSWORD }}
-        server-dir: /  # Set this to root or the desired parent directory
+        server-dir: /public_html/  # Set this to root or the desired parent directory
         local-dir: dist/  # This is where your build output is located
         exclude: |
           .git*
