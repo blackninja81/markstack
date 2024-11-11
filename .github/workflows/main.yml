@@ -83,7 +83,7 @@ jobs:
           FTP_DOMAIN: ${{ secrets.FTP_DOMAIN }}  # Use the domain where the extract.php script will be accessible
         run: |
           # Wait for the upload to complete and then execute the PHP script
-          EXECUTE_URL="https://$FTP_DOMAIN/extract.php"
+          EXECUTE_URL="https://$FTP_DOMAIN/bookmark.johnkaburu.co.ke/extract.php"
           echo "Executing extraction script at $EXECUTE_URL"
           curl -s "$EXECUTE_URL"
 
