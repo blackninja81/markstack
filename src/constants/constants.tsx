@@ -330,6 +330,13 @@ export const Resources = {
         link: "https://react-awesome-reveal.morello.dev/",
       }
       ,
+      tailwind: {
+        image: "/assets/images/screenshots/screenshot79.webp",
+        label: "Tailwind Generator",
+        desciption:"",
+        link: "https://tailwind-generator.com/generators?ref=dailydev",
+      }
+      ,
       
     },
     uilibrary: {
