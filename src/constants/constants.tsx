@@ -331,9 +331,9 @@ export const Resources = {
       }
       ,
       tailwind: {
-        image: "/assets/images/screenshots/screenshot79.webp",
+        image: "/assets/images/screenshots/screenshot85.webp",
         label: "Tailwind Generator",
-        desciption:"",
+        desciption:"Tailwind Generator",
         link: "https://tailwind-generator.com/generators?ref=dailydev",
       }
       ,
