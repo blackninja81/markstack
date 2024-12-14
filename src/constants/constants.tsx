@@ -203,6 +203,13 @@ export const Resources = {
         link: "https://driverjs.com/",
       }
       ,
+      tailwind: {
+        image: "/assets/images/screenshots/screenshot85.webp",
+        label: "Tailwind Generator",
+        desciption:"Tailwind Generator",
+        link: "https://tailwind-generator.com/generators?ref=dailydev",
+      }
+      ,
       cssbuttons: {
         image: "/assets/images/screenshots/screenshot24.webp",
         label: "css Buttons",
@@ -330,13 +337,7 @@ export const Resources = {
         link: "https://react-awesome-reveal.morello.dev/",
       }
       ,
-      tailwind: {
-        image: "/assets/images/screenshots/screenshot85.webp",
-        label: "Tailwind Generator",
-        desciption:"Tailwind Generator",
-        link: "https://tailwind-generator.com/generators?ref=dailydev",
-      }
-      ,
+      
       
     },
     uilibrary: {
