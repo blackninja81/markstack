@@ -30,6 +30,12 @@ export const Resources = {
         desciption:"Open source browser tools for everyday use",
         link: "https://omatsuri.app/",
       },
+      formbuilder: {
+        image: "/assets/images/screenshots/screenshot86.webp",
+        label: "Shadcn Form Builder",
+        desciption:"Tool to build forms with shadcn ui components",
+        link: "https://www.shadcn-form.com/",
+      },
       shadows: {
         image: "/assets/images/screenshots/screenshot4.webp",
         label: "Box Shadows",
