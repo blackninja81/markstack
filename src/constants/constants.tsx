@@ -24,6 +24,12 @@ export const Resources = {
         desciption:"Create animations for js frameworks",
         link: "https://animejs.com/",
       },
+      useanimations: {
+        image: "/assets/images/screenshots/Screenshot79.webp",
+        label: "useanimations",
+        desciption:"Animated icons in Lottie Framework",
+        link: "https://useanimations.com/?ref=dailydev#explore",
+      },
       Omatsuri: {
         image: "/assets/images/screenshots/screenshot3.webp",
         label: "Omatsuri",
