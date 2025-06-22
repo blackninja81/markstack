@@ -656,12 +656,12 @@ export const Resources = {
     },
     ai: {
       chatgpt: {
-        image: "/assets/images/screenshots/screenshot81.webp",
+        image: "/assets/images/screenshots/screenshot80.webp",
         label: "ChatGPT",
         link: "https://chat.openai.com/",
       },
       claude: {
-        image: "/assets/images/screenshots/screenshot80.webp",
+        image: "/assets/images/screenshots/screenshot81.webp",
         label: "ClaudeAI",
         link: "https://claude.ai/",
       },
