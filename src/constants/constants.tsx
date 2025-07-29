@@ -656,12 +656,12 @@ export const Resources = {
     },
     ai: {
       chatgpt: {
-        image: "/assets/images/screenshots/screenshot80.webp",
+        image: "/assets/images/screenshots/screenshot81.webp",
         label: "ChatGPT",
         link: "https://chat.openai.com/",
       },
       claude: {
-        image: "/assets/images/screenshots/screenshot81.webp",
+        image: "/assets/images/screenshots/screenshot80.webp",
         label: "ClaudeAI",
         link: "https://claude.ai/",
       },
@@ -674,6 +674,16 @@ export const Resources = {
         image: "/assets/images/screenshots/screenshot83.webp",
         label: "Perplexity",
         link: "https://www.perplexity.ai/",
+      },
+      stitch: {
+        image: "/assets/images/screenshots/Screenshot80.webp",
+        label: "Stitch",
+        link: "https://stitch.withgoogle.com/",
+      },
+      lovable: {
+        image: "/assets/images/screenshots/Screenshot81.webp",
+        label: "Lovable",
+        link: "https://lovable.dev/",
       },
     }
 }
